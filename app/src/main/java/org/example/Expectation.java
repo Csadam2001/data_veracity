@@ -3,11 +3,14 @@ package org.example;
 public class Expectation {
     private String columnName;
     private String columnType;
+    private String type;
     private String value;
+    
 
-    public Expectation(String columnName, String columnType, String value) {
+    public Expectation(String columnName, String columnType, String type, String value) {
         this.columnName = columnName;
         this.columnType = columnType;
+        this.type = type;
         this.value = value;
     }
 
@@ -16,6 +19,9 @@ public class Expectation {
 
     public String getColumnType() { return columnType; }
     public void setColumnType(String columnType) { this.columnType = columnType; }
+
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
 
     public String getValue() { return value; }
     public void setValue(String value) { this.value = value; }

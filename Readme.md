@@ -14,6 +14,10 @@ Data_structure:
       type: String
       nullable: false
       default: ""
+    - name: Username
+      tpye: String
+      nullabel: false
+      default: ""
     - name: People_Count
       type: Integer
       nullable: false
@@ -22,6 +26,10 @@ Data_structure:
       type: boolean
       nullable: true
       default: false
+    - name: Sex
+      type: String
+      nullabel: false
+      default: null
 Special_expectations:
     - name: People_count
       expectation: 
@@ -34,8 +42,18 @@ Special_expectations:
       expectation:
         - type: "bool constraint"
           condition: "Cannot be true"
+    - name: Sex
+      expectation:
+        - type: "enum"
+          condition: "M,F"
+    - name: Username
+      expectation:
+        type: "regex"
+          condition: "^[a-zA-Z0-9_]{8,16}$"
 
 ```
+
+The Database config part only needed for this demo project, not for the production product.
 ### Default data_structure if the partners didn't define it:
 ``` bash
 name: default name
@@ -58,6 +76,8 @@ default: null
     - Contains substring
 
     - regex
+
+    - enum
 
 - Boolean
     

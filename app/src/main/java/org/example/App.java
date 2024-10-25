@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.database.GetDatabase;
+import org.example.database.ValidateDB;
 import org.example.Expectation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Scanner;
@@ -22,11 +23,12 @@ public class App {
 
         ValidationConfig config = new ValidationConfig(
             "test",  // datasource
-            "postgresql+psycopg2://house:asd@localhost:5432/house_db",  // connection_string
+            "postgresql+psycopg2://postgres:asd@localhost:5432/postgres",  // connection_string
             tableName,  // table_name
             expectations  // list of expectations
         );
         writeToJsonFile(config);
+        ValidateDB.Validate();
     }
     public static void Consumerside(int a){
         int level = a;
