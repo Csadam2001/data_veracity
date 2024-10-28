@@ -9,47 +9,48 @@ Database_config:
     - username: house
     - password:asd
     - database: house_db
-Data_structure: 
+Data_types: 
     - name: Name
       type: String
-      nullable: false
-      default: ""
+      expectation:
+        - nullable: false
+        - default: ""
     - name: Username
-      tpye: String
-      nullabel: false
-      default: ""
+      type: String
+      expectation:
+        - nullable: false
+        - default: ""
+        - type: "regex"
+          condition: "^[a-zA-Z0-9_]{8,16}$"
     - name: People_Count
       type: Integer
-      nullable: false
-      default: 1
-    - name: Has_garage
-      type: boolean
-      nullable: true
-      default: false
-    - name: Sex
-      type: String
-      nullabel: false
-      default: null
-Special_expectations:
-    - name: People_count
       expectation: 
+        - nullable: false
+        - default: 1
         - type: "range"
           min: 1
           max: 6
         - type: "Min"
           min: 10
-    - name: Has_pet
+    - name: Has_garage
+      type: boolean
       expectation:
+        - nullable: true
+        - default: false
         - type: "bool constraint"
           condition: "Cannot be true"
     - name: Sex
+      type: String
       expectation:
+        - nullable: false
+        - default: null
         - type: "enum"
           condition: "M,F"
+Special_expectations:
     - name: Username
-      expectation:
-        type: "regex"
-          condition: "^[a-zA-Z0-9_]{8,16}$"
+    expectation:
+      - type: "cant contain"
+        value: "Name cant be in Username"
 
 ```
 
