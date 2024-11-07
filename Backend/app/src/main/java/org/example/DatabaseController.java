@@ -23,7 +23,7 @@ public class DatabaseController {
    @GetMapping("/json-structure")
     public JsonNode getJsonStructure() {
         try {
-            File file = new File("C:\\Egyetem\\szakdoga\\szakdogaa\\singlexAPI.json");
+            File file = new File("C:\\Egyetem\\szakdoga\\szakdoga\\szakdoga\\Backend\\singlexAPI.json");
             if (file.exists()) {
                 return objectMapper.readTree(file);
             } else {
