@@ -18,13 +18,10 @@ public class GetDatabase {
         ResultSet rs = null;
         List<String> columnNames = new ArrayList<>();
         try {
-            // Open a connection
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
-            // Get metadata about the database
             DatabaseMetaData dbMetaData = conn.getMetaData();
 
-            // Get the columns of the specific table
             rs = dbMetaData.getColumns(null, null, tableName, null);
             while (rs.next()) {
                 String columnName = rs.getString("COLUMN_NAME");
@@ -48,13 +45,10 @@ public class GetDatabase {
         ResultSet rs = null;
         List<String> columnTypes = new ArrayList<>();
         try {
-            // Open a connection
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
-            // Get metadata about the database
             DatabaseMetaData dbMetaData = conn.getMetaData();
 
-            // Get the columns of the specific table
             rs = dbMetaData.getColumns(null, null, tableName, null);
             while (rs.next()) {
                 String columnType = rs.getString("TYPE_NAME");

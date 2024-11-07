@@ -3,6 +3,8 @@ import great_expectations.expectations as gxe
 import json
 import sys
 import psycopg2
+import time
+import sys
 
 
 def validate_from_json(json_file):
@@ -11,47 +13,42 @@ def validate_from_json(json_file):
         validation_data = json.load(file)
 
     context = gx.get_context(mode="file")
-
-    # Explicitly add the datasource if it doesn't exist
-    datasource = context.data_sources.get(validation_data["datasource"])
-
+    datasource = context._datasources.get(validation_data["datasource"])
     if datasource is None:
-        datasource = context.sources.add_sql(
+        datasource = context.data_sources.add_sql(
             name=validation_data["datasource"],
             connection_string=validation_data["connection_string"]
         )
 
     table_name = validation_data["table_name"]
+    asset_name = "house"
+    if asset_name in [asset.name for asset in datasource.assets]:
+        data_asset = datasource.get_asset(asset_name)
+    else:
+        data_asset = datasource.add_table_asset(name=asset_name, table_name=table_name)
 
-    # Debug: List available assets in the datasource
-    #print("Available assets in datasource:", datasource.list_assets())
-
-    data_asset = datasource.get_asset("houses")
-    #print(f"Table {table_name} not found, adding it explicitly.")
-    #data_asset = datasource.add_table_asset(name=table_name, table_name=table_name, schema_name="public")
-
-    # Get batch definition
-    #batch_definition = data_asset.get_batch_definition("batch_definition")
-
-    batch_definition = data_asset.add_batch_definition_whole_table("batch_definition")
+    unique_batch_name = f"batch_definition_{int(time.time())}"
+    batch_definition = data_asset.add_batch_definition_whole_table(unique_batch_name)
 
     batch = batch_definition.get_batch()
 
     for expectation in validation_data["expectations"]:
         column = expectation["columnName"]
         value = expectation["value"]
-        result = {"column": column, "status": "Not Implemented"}  # Placeholder for actual validation result
-        if value == "Cannot be empty":
+        valtype = expectation["valtype"]
+        result = {"column": column, "status": "Not Implemented"}
+        if valtype == "Cannot be empty":
             exp = gxe.ExpectColumnValuesToNotBeNull(column=column)
             result["status"] = batch.validate(exp).success
-        elif value == "Cannot be true":
+        elif valtype == "Cannot be true":
             exp = gxe.ExpectColumnValuesToBeFalse(column=column)
             result["status"] = batch.validate(exp).success
-        # Add more conditions for other validation types
+        elif valtype == "Min":
+            exp = gxe.ExpectColumnValuesToBeBetween(column=column,min_value=value, max_value=None, strict_min=False)
+            result["status"] = batch.validate(exp).success
 
         results[column] = result
 
-    # Write results to a file
     with open("validation_results.json", "w") as result_file:
         json.dump(results, result_file)
 
@@ -59,5 +56,5 @@ def validate_from_json(json_file):
 
 
 if __name__ == "__main__":
-    json_file = sys.argv[1]
-    validate_from_json(json_file)
+    #json_file = sys.argv[1]
+    validate_from_json("C:\\Egyetem\\szakdoga\\szakdogaa\\app\\expectations.json")

@@ -50,7 +50,7 @@ Special_expectations:
     - name: Username
     expectation:
       - type: "cant contain"
-        value: "Name cant be in Username"
+        value: "Name value cant be in Username"
 
 ```
 

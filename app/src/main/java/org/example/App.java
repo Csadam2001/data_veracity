@@ -2,171 +2,157 @@ package org.example;
 
 import org.example.database.GetDatabase;
 import org.example.database.ValidateDB;
-import org.example.Expectation;
+import org.checkerframework.checker.units.qual.m;
+import org.example.config.*;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import java.util.Map;
+import java.util.Properties;
 import java.util.Scanner;
+import java.util.TimeZone;
 import java.util.List;
 import java.io.IOException;
+import java.util.Date;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.io.File;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
 public class App {
     
-    static String tableName = "houses";
-    static List<String> columns = new ArrayList<>();
-    static List<String> columntype = new ArrayList<>();
-    static List<Expectation> expectations = new ArrayList<>();
-    static int level = 0;
-    public static void main(String[] args) {
-        columns = GetDatabase.getTableColumnNames(tableName);
-        columntype = GetDatabase.getTableColumnTypes(tableName);
-        Consumerside(level);
+        public static void main(String[] args) {
+            SpringApplication.run(App.class, args);
+            /*ValidationConfig config = new ValidationConfig();
+            config.setMeta(SetUpMeta("1111", "2222", "signed"));
+            List<Objective> objectives = new ArrayList<>();
 
-        ValidationConfig config = new ValidationConfig(
-            "test",  // datasource
-            "postgresql+psycopg2://postgres:asd@localhost:5432/postgres",  // connection_string
-            tableName,  // table_name
-            expectations  // list of expectations
-        );
-        writeToJsonFile(config);
-        ValidateDB.Validate();
-    }
-    public static void Consumerside(int a){
-        int level = a;
-        int columnnum = 0;
-        String type = "";
-        String name = "";
-         String value = "";
-        Scanner in = new Scanner(System.in);
-        while(level != -1){
-            switch (level) {
-                case 0:
-                    System.out.println("Consumer side: "+'\n'+"Choose from the following by pressing the number:"+'\n'+"1: Add an expectation"+'\n'+"2: End the contract");
-                    level = in.nextInt();
-                    break;
-                case 1: 
-                    System.err.println("Choose from the following columns:");
-                    for(int i = 0; i < columns.size(); i++){
-                        System.out.println(i + ": " + columns.get(i));
-                    }
-                    columnnum = in.nextInt();
-                    type = columntype.get(columnnum);
-                    name = columns.get(columnnum);
-                    switch (type) {
-                        case "int4":
-                            System.out.println("The column you choose has integers in it, choose from the following: "
-                                                + '\n' + "1: Add interval expectation"
-                                                + '\n' + "2: Add Minimum expectation"
-                                                + '\n' + "3: Add Maximum expectation");
-                            columnnum = in.nextInt();
-                            switch (columnnum) {
-                                case 1:
-                                    System.out.println("Minimum:");
-                                    int min = in.nextInt();
-                                    System.out.println("Maximum:");
-                                    int max = in.nextInt();
-                                    value = String.valueOf(min) + " " + String.valueOf(max);
-                                    expectations.add(new Expectation(name, type, value));
-                                    level = 0;
-                                    break;
-                                case 2:
-                                    System.out.println("Minimum:");
-                                    min = in.nextInt();
-                                    value = String.valueOf(min);
-                                    expectations.add(new Expectation(name, type, value));
-                                    level = 0;
-                                    break;
-                                case 3:
-                                    System.out.println("Maximum:");
-                                    max = in.nextInt();
-                                    value = String.valueOf(max);
-                                    expectations.add(new Expectation(name, type, value));
-                                    level = 0;
-                                    break;
-                            
-                                default:
-                                    System.out.println("Wrong number!");
-                                    level = 0;
-                                    break;
-                            }
-                            break;
-                        case "varchar":
-                            System.out.println("The column you choose has String in it, choose from the following: "
-                                                + '\n' + "1: Has a specific String"
-                                                + '\n' + "2: The String can be empty"
-                                                + '\n' + "3: The String cannot be empty");
-                            columnnum = in.nextInt();
-                            switch (columnnum) {
-                                case 1:
-                                    System.out.println("Type the word that need to be in the row:");
-                                    value = in.next();
-                                    expectations.add(new Expectation(name, type, value));
-                                    level = 0;
-                                    break;
-                                case 2:
-                                    System.out.println(name+"Can be empty");
-                                    value = "Can be empty";
-                                    expectations.add(new Expectation(name, type, value));
-                                    level = 0;
-                                    break;
-                                case 3:
-                                    System.out.println(name+"Cannot be empty");
-                                    value = "Cannot be empty";
-                                    expectations.add(new Expectation(name, type, value));
-                                    level = 0;
-                                    break;
-                            
-                                default:
-                                    System.out.println("Wrong number!");
-                                    level = 0;
-                                    break;
-                            }
-                            break;
-                        case "bool":
-                            System.out.println("The column you choose has Bool in it, choose from the following: "
-                                                + '\n' + "1: Cannot be True"
-                                                + '\n' + "2: Cannot be False");
-                            columnnum = in.nextInt();
-                            switch (columnnum) {
-                                case 1:
-                                    System.out.println(name +" cannot be true!");
-                                    value = "Cannot be true";
-                                    expectations.add(new Expectation(name, type, value));
-                                    level = 0;
-                                    break;
-                                case 2:
-                                    System.out.println(name + " cannot be false!");
-                                    value = "Cannot be false";
-                                    expectations.add(new Expectation(name, type, value));
-                                    level = 0;
-                                    break;
-                                default:
-                                    System.out.println("Wrong number!");
-                                    level = 0;
-                                    break;
-                            }
-                            break;
-                        default:
-                            level = 0;
-                            break;
-                    }
-                    break;
-                case 2:
-                    level = -1;
-                    break;
-                default:
-                    System.out.println("Wrong number!");
-                    level = 0;
+        
+         objectives.add(createCombinedValidationForPaths(
+            "Syntax Validation",
+            List.of(
+                new PathTypePair(new String[] {"verb", "id"}, "string"),
+                new PathTypePair(new String[] {"statement", "context", "contextActivities", "category", "definition", "type"}, "string")
+            )
+        ));
+            
+            config.setObjectives(objectives);
+            writeToJsonFile(config);*/
+        }
+
+        public static void VueTest(List<String[]> paths, List<String[]> expectations){
+            ValidationConfig config = new ValidationConfig();
+            config.setMeta(SetUpMeta("1111", "2222", "signed"));
+            List<Objective> objectives = new ArrayList<>();
+            List<PathTypePair> path = new ArrayList<>();
+            for(int i = 0; i < paths.size(); i++){
+                PathTypePair newpath = new PathTypePair(paths.get(i), expectations.get(i)[0]);
+                path.add(newpath);
+            }
+
+            objectives.add(createCombinedValidationForPaths(
+                "Syntax Validation",
+                path
+            ));
+                
+                config.setObjectives(objectives);
+                writeToJsonFile(config);
+        }
+
+        public static Meta SetUpMeta(String ProviderID, String ConsumerID, String signed){
+            Meta meta = new Meta("Description", ProviderID, ConsumerID, "Json",signed,GetTimestamp());
+            return meta;
+        }
+        
+        public static Objective createObjective(String description, String aspect, Evaluation evaluation) {
+            Objective objective = new Objective(description, aspect);
+            objective.setEvaluation(evaluation);
+            return objective;
+        }
+    
+        public static Objective createCombinedValidationForPaths(String description, List<PathTypePair> pathTypePairs) {
+            Objective objective = new Objective(description, "syntax");
+    
+            Property rootSchema = new Property("object", new HashMap<>());
+            
+            for (PathTypePair pathTypePair : pathTypePairs) {
+                addPathToSchema(rootSchema, pathTypePair.path, pathTypePair.type);
+            }
+    
+            Evaluation evaluation = new Evaluation();
+            evaluation.setSchema(rootSchema);
+    
+            objective.setEvaluation(evaluation);
+            return objective;
+        }
+    
+        public static void addPathToSchema(Property rootSchema, String[] path, String type) {
+            Property current = rootSchema;
+            for (int i = 0; i < path.length; i++) {
+                if (current.getProperties() == null) {
+                    current.setProperties(new HashMap<>());
+                }
+                Map<String, Property> properties = current.getProperties();
+                properties.putIfAbsent(path[i], new Property(i == path.length - 1 ? type : "object"));
+                current = properties.get(path[i]);
             }
         }
-    }
-    public static void writeToJsonFile(ValidationConfig config) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            // Write the list of expectations to a JSON file
-            mapper.writeValue(new File("expectations.json"), config);
-            System.out.println("Expectations have been written to expectations.json");
-        } catch (IOException e) {
-            e.printStackTrace();
+        
+        public static class PathTypePair {
+            String[] path;
+            String type;
+    
+            public PathTypePair(String[] path, String type) {
+                this.path = path;
+                this.type = type;
+            }
         }
-    }
+        public static Evaluation createEvaluationWithArgs(String target, String type, Args args) {
+            Evaluation evaluation = new Evaluation(target, type, args);
+            return evaluation;
+        }
+    
+        public static Evaluation createEvaluationWithRange(double min, double max) {
+            Evaluation evaluation = new Evaluation();
+            evaluation.setMin(min);
+            evaluation.setMax(max);
+            return evaluation;
+        }
+    
+        public static Evaluation createEvaluationWithMin(double min) {
+            Evaluation evaluation = new Evaluation();
+            evaluation.setMin(min);
+            return evaluation;
+        }
+    
+        public static Evaluation createEvaluation(String target, String type) {
+            return new Evaluation(target, type, null);
+        }
+
+        public static void writeToJsonFile(ValidationConfig config) {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.enable(SerializationFeature.INDENT_OUTPUT);
+             mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL); 
+            try {
+                mapper.writeValue(new File("expectations.json"), config);
+                System.out.println("Expectations have been written to expectations.json");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        public static String GetTimestamp(){
+            Date date = new Date();
+            String ISO_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+            SimpleDateFormat sdf = new SimpleDateFormat(ISO_FORMAT);
+            TimeZone utc = TimeZone.getTimeZone("UTC");
+            sdf.setTimeZone(utc);
+            return sdf.format(date);
+        }
 }

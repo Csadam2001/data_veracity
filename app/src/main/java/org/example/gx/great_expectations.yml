@@ -83,90 +83,24 @@ data_docs_sites:
 fluent_datasources:
   test:
     type: sql
-    id: 3c26ff9d-6e25-4570-baa2-a96875e72a3d
+    id: a71a0216-b730-4cf9-8773-4a1fcab7d9f2
     assets:
       house:
         type: table
-        id: b4ed700e-622e-4898-9efc-059413a2beb6
+        id: 08107018-f61b-4940-a50d-b29c1ea08f92
         batch_metadata: {}
         batch_definitions:
-          batch_definition_1730742656:
-            id: ae79e108-e946-4a2c-9f79-1ec55c9d1bfd
+          batch_definition_1730737130:
+            id: f8f03552-f54c-4703-b562-a6a8b6c0a527
             partitioner:
-          batch_definition_1730815172:
-            id: a63af473-e285-4f75-9e11-bed913ebc13d
+          batch_definition_1730737717:
+            id: 6e94b206-716d-4014-b22f-cca71ed81c27
             partitioner:
-          batch_definition_1730815226:
-            id: 4475cede-dddc-4212-88ef-e5d58c97ae3e
-            partitioner:
-          batch_definition_1730815232:
-            id: d15945f9-61f9-412f-9118-ae7affba59a5
-            partitioner:
-          batch_definition_1730826594:
-            id: 1c62bd83-6df4-4947-b7a2-d278a46915f4
-            partitioner:
-          batch_definition_1730826598:
-            id: d405b129-977c-40e1-b827-8f2942865a19
-            partitioner:
-          batch_definition_1730826599:
-            id: 1560aa2d-57db-49d8-91c7-95201de3b46e
-            partitioner:
-          batch_definition_1730826603:
-            id: 92d1b51d-1f3f-4e57-be5c-10066389f9da
-            partitioner:
-          batch_definition_1730826606:
-            id: 52f4c5d2-2bf2-4f99-88ad-4e53f68e7af5
-            partitioner:
-          batch_definition_1730826607:
-            id: eee0f42e-3c45-4f6b-82b7-845a47fdf474
-            partitioner:
-          batch_definition_1730826608:
-            id: f1f759ce-4e64-4798-a23a-c9c286fc914e
-            partitioner:
-          batch_definition_1730826610:
-            id: f9e3fca5-aea5-48b8-88f2-98119fdb37a8
-            partitioner:
-          batch_definition_1730826611:
-            id: 21a55c96-204b-4218-ad00-38ce8a64fe50
-            partitioner:
-          batch_definition_1730826614:
-            id: 95d51d90-86db-4b63-8ed7-54b2e8cd62d0
-            partitioner:
-          batch_definition_1730826615:
-            id: b39b54b0-3d09-4554-9a70-378358abbf0c
-            partitioner:
-          batch_definition_1730826618:
-            id: fb6b9863-b19a-4b1c-9332-9f8a8d546673
-            partitioner:
-          batch_definition_1730826619:
-            id: 0076d48a-b9fd-4901-8180-cbb2fa907450
-            partitioner:
-          batch_definition_1730826622:
-            id: 6184d9e9-7604-4e35-a309-21e1a23c6698
-            partitioner:
-          batch_definition_1730826623:
-            id: 5e7cc04e-da0b-4d32-b17d-2289e5a2131d
-            partitioner:
-          batch_definition_1730826626:
-            id: eeb6d415-55c0-4a4f-9d88-1059d4b0fa9d
-            partitioner:
-          batch_definition_1730826651:
-            id: 220b8484-cd74-49bf-86c1-53472e69be41
-            partitioner:
-          batch_definition_1730826791:
-            id: beb7f21c-9c9e-43ec-afaf-20086a8bd875
-            partitioner:
-          batch_definition_1730826932:
-            id: b611fa5b-cb29-4213-a19b-6726fd88dedd
-            partitioner:
-          batch_definition_1730827099:
-            id: d3cc4213-39a3-44b8-8ca8-ebf42daa4cac
-            partitioner:
-          batch_definition_1730850644:
-            id: eede1439-f05f-446c-a574-1eeec4f3e570
+          batch_definition_1730737734:
+            id: db4ca82f-e165-4945-ba2a-85d215f7d5dc
             partitioner:
         table_name: houses
         schema_name:
     connection_string: postgresql+psycopg2://postgres:asd@localhost:5432/postgres
 analytics_enabled:
-data_context_id: a1c0fc99-04b3-492b-b992-8d38ea928c22
+data_context_id: 8012524a-6b2a-4673-b76e-f023489fdeef

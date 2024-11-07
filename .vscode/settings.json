@@ -1,5 +1,3 @@
 {
-    "java.project.sourcePaths": [
-        "gradle"
-    ]
+    "java.configuration.updateBuildConfiguration": "automatic"
 }

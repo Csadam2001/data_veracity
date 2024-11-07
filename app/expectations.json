@@ -1,1 +1,50 @@
-{"datasource":"test","connection_string":"postgresql+psycopg2://postgres:asd@localhost:5432/postgres","table_name":"houses","expectations":[{"columnName":"persons_living","columnType":"int4","value":"1"}]}
+{
+  "meta" : {
+    "description" : "Description",
+    "provider" : "1111",
+    "consumer" : "2222",
+    "dataType" : "Json",
+    "status" : "signed",
+    "timestamp" : "2024-11-07T10:10:00.180Z"
+  },
+  "objectives" : [ {
+    "description" : "Syntax Validation",
+    "aspect" : "syntax",
+    "evaluation" : {
+      "schema" : {
+        "type" : "object",
+        "properties" : {
+          "statement" : {
+            "type" : "object",
+            "properties" : {
+              "actor" : {
+                "type" : "object",
+                "properties" : {
+                  "account" : {
+                    "type" : "object",
+                    "properties" : {
+                      "name" : {
+                        "type" : "String"
+                      },
+                      "homePage" : {
+                        "type" : "String"
+                      }
+                    }
+                  }
+                }
+              },
+              "verb" : {
+                "type" : "object",
+                "properties" : {
+                  "id" : {
+                    "type" : "String"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  } ]
+}

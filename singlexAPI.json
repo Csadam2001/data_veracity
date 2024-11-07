@@ -1,0 +1,97 @@
+{
+    "person": {
+        "_id": "66db148be982833297ea3141",
+        "display": "3f324ffd4112ed63 - https://www.inokufu.com/ (xAPI Account)"
+    },
+    "completedQueues": [
+        "STATEMENT_FORWARDING_QUEUE",
+        "STATEMENT_PERSON_QUEUE",
+        "STATEMENT_QUERYBUILDERCACHE_QUEUE"
+    ],
+    "processingQueues": [],
+    "deadForwardingQueue": [],
+    "pendingForwardingQueue": [],
+    "completedForwardingQueue": [],
+    "_id": "66db148b7048fd001d44d33e",
+    "hasGeneratedId": true,
+    "organisation": "626a340cccbcc9000aff1421",
+    "lrs_id": "66b3862c128b7e9a4eaef81f",
+    "client": "66b3873f128b7e59acaef824",
+    "priority": "MEDIUM",
+    "active": true,
+    "voided": false,
+    "timestamp": "2024-09-04T17:01:06.887Z",
+    "stored": "2024-09-06T14:41:14.979Z",
+    "hash": "0609f48307a19f35b458a9dd1a3feb0f9bd9c77c",
+    "agents": [
+        "https://www.inokufu.com/|3f324ffd4112ed63"
+    ],
+    "relatedAgents": [
+        "https://www.inokufu.com/|3f324ffd4112ed63",
+        "mailto:contact@inokufu.com"
+    ],
+    "registrations": [],
+    "verbs": [
+        "https://w3id.org/xapi/netc/verbs/accessed"
+    ],
+    "activities": [
+        "https://www.inokufu.com/"
+    ],
+    "relatedActivities": [
+        "https://www.inokufu.com/",
+        "https://w3id.org/xapi/lms"
+    ],
+    "statement": {
+        "actor": {
+            "account": {
+                "name": "3f324ffd4112ed63",
+                "homePage": "https://www.inokufu.com/"
+            },
+            "objectType": "Agent"
+        },
+        "verb": {
+            "id": "https://w3id.org/xapi/netc/verbs/accessed"
+        },
+        "object": {
+            "objectType": "Activity",
+            "id": "https://www.inokufu.com/",
+            "definition": {
+                "type": "https://w3id.org/xapi/acrossx/activities/webpage",
+                "name": {
+                    "en": "Inokufu | Better data for better learning"
+                },
+                "extensions": {
+                    "https://w3id&46;org/xapi/acrossx/extensions/type": "website"
+                }
+            }
+        },
+        "context": {
+            "contextActivities": {
+                "category": [
+                    {
+                        "id": "https://w3id.org/xapi/lms",
+                        "definition": {
+                            "type": "http://adlnet.gov/expapi/activities/profile"
+                        },
+                        "objectType": "Activity"
+                    }
+                ]
+            },
+            "extensions": {
+                "http://id&46;tincanapi&46;com/extension/duration": "0s",
+                "http://id&46;tincanapi&46;com/extension/browser-info": "Firefox 129.0"
+            }
+        },
+        "version": "1.0.0",
+        "timestamp": "2024-09-04T17:01:06.887Z",
+        "id": "c68c9086-fdfe-405e-aeac-fc5fa6e6bcc9",
+        "stored": "2024-09-06T14:41:14.979Z",
+        "authority": {
+            "objectType": "Agent",
+            "name": "Mockup WALRUC write",
+            "mbox": "mailto:contact@inokufu.com"
+        }
+    },
+    "personaIdentifier": "66db148b536c52d8bab895ca",
+    "failedForwardingLog": []
+}
