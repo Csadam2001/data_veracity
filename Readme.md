@@ -1,88 +1,37 @@
 # Definition, Validation and Evaluation of Data Veracity Level Aggrements 
 
-### Data structure format for validation aggrements:
-``` bash
-Database_config:
-    - type: postgresql
-    - host: localhost
-    - port: 5432
-    - username: house
-    - password:asd
-    - database: house_db
-Data_types: 
-    - name: Name
-      type: String
-      expectation:
-        - nullable: false
-        - default: ""
-    - name: Username
-      type: String
-      expectation:
-        - nullable: false
-        - default: ""
-        - type: "regex"
-          condition: "^[a-zA-Z0-9_]{8,16}$"
-    - name: People_Count
-      type: Integer
-      expectation: 
-        - nullable: false
-        - default: 1
-        - type: "range"
-          min: 1
-          max: 6
-        - type: "Min"
-          min: 10
-    - name: Has_garage
-      type: boolean
-      expectation:
-        - nullable: true
-        - default: false
-        - type: "bool constraint"
-          condition: "Cannot be true"
-    - name: Sex
-      type: String
-      expectation:
-        - nullable: false
-        - default: null
-        - type: "enum"
-          condition: "M,F"
-Special_expectations:
-    - name: Username
-    expectation:
-      - type: "cant contain"
-        value: "Name value cant be in Username"
+### How to start the application
+
+1. Open two terminal
+
+- First in the Backend folder and run the following code:
+
+```bash
+gradle run
 
 ```
 
-The Database config part only needed for this demo project, not for the production product.
-### Default data_structure if the partners didn't define it:
-``` bash
-name: default name
-type: default type
-nullable: false
-default: null
+2. In the second terminal:
+
+- Open Frontend/val folder and run:
+
+```bash
+npm install
+npm install axios
+npm run serve
 ```
-### The default type constraints:
 
-- Integer
 
-    - range
+At localhost:8081 a Vue.js App is running now, here show it should look: 
 
-    - min
+![alt text](assets/image.png)
 
-    - max
+Hit the Load JSON Structure, then you can see the keys, where you can add a Expectations, if you clikc in one of those you can select it.
 
-- String
+Then you can see at the Selected Path, that it writes the Path you choose and if you choose a Data Type that you want it to be, and hit Save Validation, it will save it.
 
-    - Contains substring
+![alt text](assets/image-1.png)
 
-    - regex
+Then you can add more path if you want, and if you selected all the path you want hit Create Expectation, or if you want to start over hit Clear Validations.
 
-    - enum
-
-- Boolean
-    
-    - Cant/Must be true
-
-    - Cant/Must be false
- 
+If you hit Create Expectations, you should get a messaeage that the Expectation created succesfully, and you can find the expectations.json at Backend/app/expectations.json.
