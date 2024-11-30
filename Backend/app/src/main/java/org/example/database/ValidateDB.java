@@ -7,9 +7,9 @@ import java.io.IOException;
 public class ValidateDB {
 
     public static ValidationResult Validate() {
-        String pythonSyntaxScriptPath = "C:\\Egyetem\\szakdoga\\szakdoga\\szakdoga\\valdiation\\validate_from_json.py";
-        String pythonValueScriptPath = "C:\\Egyetem\\szakdoga\\szakdoga\\szakdoga\\valdiation\\validate_value_exp.py";
-        String pythonInterpreterPath = "C:\\Egyetem\\szakdoga\\szakdoga\\szakdoga\\valdiation\\my_venv\\Scripts\\python.exe";
+        String pythonSyntaxScriptPath = "C:\\Egyetem\\szakdoga\\szakdoga\\szakdoga\\validation\\validate_from_json.py";
+        String pythonValueScriptPath = "C:\\Egyetem\\szakdoga\\szakdoga\\szakdoga\\validation\\validate_value_exp.py";
+        String pythonInterpreterPath = "C:\\Egyetem\\szakdoga\\szakdoga\\szakdoga\\validation\\my_venv\\Scripts\\python.exe";
 
         boolean syntaxValidation = false;
         boolean valueValidation = false;
