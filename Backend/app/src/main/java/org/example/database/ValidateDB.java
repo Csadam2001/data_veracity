@@ -6,35 +6,75 @@ import java.io.IOException;
 
 public class ValidateDB {
 
-    public static boolean Validate() {
-        String pythonScriptPath = "C:\\Egyetem\\szakdoga\\szakdogaa\\app\\src\\main\\java\\org\\example\\validate_from_json.py"; 
-        String jsonFilePath = "C:\\Egyetem\\szakdoga\\szakdogaa\\app\\expectations.json"; 
+    public static ValidationResult Validate() {
+        String pythonSyntaxScriptPath = "C:\\Egyetem\\szakdoga\\szakdoga\\szakdoga\\valdiation\\validate_from_json.py";
+        String pythonValueScriptPath = "C:\\Egyetem\\szakdoga\\szakdoga\\szakdoga\\valdiation\\validate_value_exp.py";
+        String pythonInterpreterPath = "C:\\Egyetem\\szakdoga\\szakdoga\\szakdoga\\valdiation\\my_venv\\Scripts\\python.exe";
+
+        boolean syntaxValidation = false;
+        boolean valueValidation = false;
 
         try {
-            ProcessBuilder pb = new ProcessBuilder("python", pythonScriptPath, jsonFilePath);
-            
-            pb.redirectErrorStream(true);
-            
-            Process process = pb.start();
-            
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
-            }
-            
-            int exitCode = process.waitFor();
-            if (exitCode == 0) {
-                System.out.println("Validation completed successfully.");
-                return true;
+            String syntaxResult = runPythonScript(pythonInterpreterPath, pythonSyntaxScriptPath);
+            syntaxValidation = "valid".equals(parseValidationResult(syntaxResult));
+            System.out.println(syntaxResult);
 
-            } else {
-                System.out.println("Validation failed with exit code " + exitCode);
-                return false;
-            }
+            String valueResult = runPythonScript(pythonInterpreterPath, pythonValueScriptPath);
+            valueValidation = "valid".equals(parseValidationResult(valueResult));
+            System.out.println(valueResult);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
-        return false;
+
+        return new ValidationResult(syntaxValidation, valueValidation);
+    }
+
+    private static String runPythonScript(String pythonInterpreterPath, String scriptPath) throws IOException, InterruptedException {
+        ProcessBuilder pb = new ProcessBuilder(pythonInterpreterPath, scriptPath);
+        pb.redirectErrorStream(true);
+        Process process = pb.start();
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            StringBuilder output = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append("\n");
+            }
+            process.waitFor();
+            return output.toString().trim();
+        }
+    }
+
+    private static String parseValidationResult(String result) {
+        String lowerCaseResult = result.trim().toLowerCase();
+        if (lowerCaseResult.equals("valid")) {
+            return "valid";
+        } else if (lowerCaseResult.equals("invalid")) {
+            return "invalid";
+        }
+        return "unknown";
+    }
+    
+
+    public static class ValidationResult {
+        private final boolean syntaxValidation;
+        private final boolean valueValidation;
+
+        public ValidationResult(boolean syntaxValidation, boolean valueValidation) {
+            this.syntaxValidation = syntaxValidation;
+            this.valueValidation = valueValidation;
+        }
+
+        public boolean isSyntaxValidation() {
+            return syntaxValidation;
+        }
+
+        public boolean isValueValidation() {
+            return valueValidation;
+        }
+
+        public boolean isValid() {
+            return syntaxValidation && valueValidation;
+        }
     }
 }

@@ -28,6 +28,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
     implementation 'com.google.guava:guava:32.1.1-jre'
+    implementation 'org.json:json:20211205'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

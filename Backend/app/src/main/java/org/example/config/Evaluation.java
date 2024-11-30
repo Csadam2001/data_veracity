@@ -1,19 +1,26 @@
 package org.example.config;
 
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL) 
 public class Evaluation {
-    private String target;
-    private String type;
-    private Args args;
-    private Property schema; 
-    private Double min;
-    private Double max;
+    private Map<String, Object> schema; 
+    private String target; 
+    private String type; 
+    private Integer min; 
+    private Integer max;  
+    private String unit;  
+    private Integer measurement; 
+    private Integer exact;
 
-    public Evaluation() {}
+    public Map<String, Object> getSchema() {
+        return schema;
+    }
 
-    public Evaluation(String target, String type, Args args) {
-        this.target = target;
-        this.type = type;
-        this.args = args;
+    public void setSchema(Map<String, Object> schema) {
+        this.schema = schema;
     }
 
     public String getTarget() {
@@ -32,34 +39,43 @@ public class Evaluation {
         this.type = type;
     }
 
-    public Property getSchema() {   
-        return schema;
-    }
-
-    public void setSchema(Property schema) {   
-        this.schema = schema;
-    }
-
-    public Args getArgs() {
-        return args;
-    }
-
-    public void setArgs(Args args) {
-        this.args = args;
-    }
-    public Double getMin() {
+    public Integer getMin() {
         return min;
     }
 
-    public void setMin(double min) {
+    public void setMin(Integer min) {
         this.min = min;
     }
 
-    public Double getMax() {
+    public Integer getMax() {
         return max;
     }
 
-    public void setMax(double max) {
+    public void setMax(Integer max) {
         this.max = max;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public Integer getMeasurement() {
+        return measurement;
+    }
+
+    public void setMeasurement(Integer measurement) {
+        this.measurement = measurement;
+    }
+
+    public Integer getExact() {
+        return exact;
+    }
+
+    public void setExact(Integer exact) {
+        this.exact = exact;
     }
 }

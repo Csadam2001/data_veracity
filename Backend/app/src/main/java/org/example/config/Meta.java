@@ -1,5 +1,7 @@
 package org.example.config;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Meta {
     private String description;
     private String provider;

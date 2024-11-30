@@ -8,6 +8,8 @@ build
 node_modules
 /dist
 
+/validation/my_venv/
+/validation/gx/
 
 # local env files
 .env.local
