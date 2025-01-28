@@ -68,7 +68,7 @@
             },
             "context": {
                 "contextActivities": {
-                    "category": [
+                    "category": [ 
                         {
                             "id": "https://w3id.org/xapi/lms",
                             "definition": {

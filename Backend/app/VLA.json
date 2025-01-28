@@ -1,0 +1,284 @@
+{
+  "meta" : {
+    "description" : "VLA example for xAPI traces",
+    "provider" : "providerID",
+    "consumer" : "consumerID",
+    "dataType" : "JSON",
+    "status" : "signed",
+    "timestamp" : "2025-01-07T13:28:28.354Z"
+  },
+  "objectives" : [ {
+    "description" : "xAPI schema validation",
+    "aspect" : "syntax",
+    "evaluation" : {
+      "schema" : {
+        "type" : "object",
+        "properties" : {
+          "hasGeneratedId" : {
+            "type" : "boolean"
+          },
+          "organisation" : {
+            "type" : "string"
+          },
+          "deadForwardingQueue" : {
+            "type" : "array",
+            "properties" : {
+              "items" : {
+                "type" : "string"
+              }
+            }
+          },
+          "processingQueues" : {
+            "type" : "array",
+            "properties" : {
+              "items" : {
+                "type" : "string"
+              }
+            }
+          },
+          "relatedAgents" : {
+            "type" : "array",
+            "properties" : {
+              "items" : {
+                "type" : "string"
+              }
+            }
+          },
+          "statement" : {
+            "type" : "object",
+            "properties" : {
+              "actor" : {
+                "type" : "object",
+                "properties" : {
+                  "account" : {
+                    "type" : "object",
+                    "properties" : {
+                      "name" : {
+                        "type" : "integer"
+                      },
+                      "homePage" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
+                  "objectType" : {
+                    "type" : "string"
+                  }
+                }
+              },
+              "stored" : {
+                "type" : "string"
+              },
+              "authority" : {
+                "type" : "object",
+                "properties" : {
+                  "name" : {
+                    "type" : "string"
+                  },
+                  "mbox" : {
+                    "type" : "string"
+                  },
+                  "objectType" : {
+                    "type" : "string"
+                  }
+                }
+              },
+              "verb" : {
+                "type" : "object",
+                "properties" : {
+                  "id" : {
+                    "type" : "string"
+                  }
+                }
+              },
+              "context" : {
+                "type" : "object",
+                "properties" : {
+                  "contextActivities" : {
+                    "type" : "object",
+                    "properties" : {
+                      "category" : {
+                        "type" : "array",
+                        "properties" : {
+                          "items" : {
+                            "type" : "object",
+                            "properties" : {
+                              "definition" : {
+                                "type" : "object"
+                              },
+                              "id" : {
+                                "type" : "string"
+                              },
+                              "objectType" : {
+                                "type" : "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "extensions" : {
+                    "type" : "object"
+                  }
+                }
+              },
+              "id" : {
+                "type" : "string"
+              },
+              "version" : {
+                "type" : "string"
+              },
+              "object" : {
+                "type" : "object",
+                "properties" : {
+                  "definition" : {
+                    "type" : "object",
+                    "properties" : {
+                      "extensions" : {
+                        "type" : "object"
+                      },
+                      "name" : {
+                        "type" : "object",
+                        "properties" : {
+                          "en" : {
+                            "type" : "string"
+                          }
+                        }
+                      },
+                      "type" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
+                  "id" : {
+                    "type" : "string"
+                  },
+                  "objectType" : {
+                    "type" : "string"
+                  }
+                }
+              },
+              "timestamp" : {
+                "type" : "string"
+              }
+            }
+          },
+          "client" : {
+            "type" : "string"
+          },
+          "voided" : {
+            "type" : "boolean"
+          },
+          "verbs" : {
+            "type" : "array",
+            "properties" : {
+              "items" : {
+                "type" : "string"
+              }
+            }
+          },
+          "timestamp" : {
+            "type" : "string"
+          },
+          "pendingForwardingQueue" : {
+            "type" : "array",
+            "properties" : {
+              "items" : {
+                "type" : "string"
+              }
+            }
+          },
+          "registrations" : {
+            "type" : "array",
+            "properties" : {
+              "items" : {
+                "type" : "string"
+              }
+            }
+          },
+          "active" : {
+            "type" : "boolean"
+          },
+          "lrs_id" : {
+            "type" : "string"
+          },
+          "priority" : {
+            "type" : "string"
+          },
+          "personaIdentifier" : {
+            "type" : "string"
+          },
+          "agents" : {
+            "type" : "array",
+            "properties" : {
+              "items" : {
+                "type" : "string"
+              }
+            }
+          },
+          "completedQueues" : {
+            "type" : "array",
+            "properties" : {
+              "items" : {
+                "type" : "string"
+              }
+            }
+          },
+          "person" : {
+            "type" : "object",
+            "properties" : {
+              "display" : {
+                "type" : "string"
+              },
+              "_id" : {
+                "type" : "string"
+              }
+            }
+          },
+          "activities" : {
+            "type" : "array",
+            "properties" : {
+              "items" : {
+                "type" : "string"
+              }
+            }
+          },
+          "stored" : {
+            "type" : "string"
+          },
+          "_id" : {
+            "type" : "string"
+          },
+          "relatedActivities" : {
+            "type" : "array",
+            "properties" : {
+              "items" : {
+                "type" : "string"
+              }
+            }
+          },
+          "failedForwardingLog" : {
+            "type" : "array",
+            "properties" : {
+              "items" : {
+                "type" : "string"
+              }
+            }
+          },
+          "hash" : {
+            "type" : "string"
+          },
+          "completedForwardingQueue" : {
+            "type" : "array",
+            "properties" : {
+              "items" : {
+                "type" : "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  } ]
+}

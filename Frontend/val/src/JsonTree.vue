@@ -39,7 +39,7 @@ export default {
       jsonstructure: [],
       expandedKeys: [],
       valuetypes: [],
-      types: ["String", "Integer", "Boolean", "Array", "Object"],
+      types: ["string", "integer", "boolean", "array", "Object"],
       typeMap: [],
       jsonended: sharedState.jsonend,
     };
@@ -51,6 +51,7 @@ export default {
   },
 
   methods: {
+
     handleSaveStruct() {
       this.$refs.jsonTree.someMethod();
     },
@@ -60,11 +61,11 @@ export default {
     },
 
     initializeTypeMap() {
-      this.valuetypes.forEach(entry => {
-        var replacedpath = entry.path
-        this.typeMap[replacedpath] = entry.type
-      });
-    },
+  this.typeMap = {};
+  sharedState.types.forEach(entry => {
+    this.typeMap[entry.path] = entry.type;
+  });
+},
 
     pathKey(path) {
       return path.join('.');

@@ -76,12 +76,16 @@ def apply_validation(objective):
         if aspect == "Record_Count":
             min_count = evaluation.get("min")
             max_count = evaluation.get("max")
+            exact = evaluation.get("exact")
             if min_count is not None and max_count is not None:
                 result = df_ge.expect_table_row_count_to_be_between(min_value=min_count, max_value=max_count)
             elif min_count is not None:
                 result = df_ge.expect_table_row_count_to_be_between(min_value=min_count, max_value=None)
             elif max_count is not None:
                 result = df_ge.expect_table_row_count_to_be_between(min_value=0, max_value=max_count)
+            elif exact is not None:
+                result = df_ge.expect_table_row_count_to_be_between(min_value=exact, max_value=exact)
+
 
         elif aspect == "String_value":
             target = evaluation["target"]

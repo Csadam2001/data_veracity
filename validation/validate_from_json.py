@@ -1,93 +1,94 @@
 import json
-import great_expectations as gx
 
-def extract_terminal_paths(schema, parent_path=""):
-    paths = []
-    if "properties" in schema:
-        for key, value in schema["properties"].items():
-            current_path = f"{parent_path}.{key}" if parent_path else key
-            if "type" in value and "properties" not in value:
-                paths.append((current_path, value["type"]))
-            elif "properties" in value:
-                paths.extend(extract_terminal_paths(value, current_path))
+def extract_schema(vla_schema, parent_key=""):
+    """Recursively extracts the schema paths and types from the VLA."""
+    paths = {}
+    for key, value in vla_schema.get("properties", {}).items():
+        current_path = f"{parent_key}.{key}" if parent_key else key
+        if value["type"] == "object":
+            paths.update(extract_schema(value, current_path))
+        elif value["type"] == "array":
+            item_type = value.get("properties", {}).get("items", {}).get("type", "string")
+            paths[current_path] = f"array<{item_type}>"
+        else:
+            paths[current_path] = value["type"]
     return paths
 
-def validate_terminal_paths(record, terminal_paths_and_types):
-    validation_results = []
+def validate_type(value, expected_type):
+    """Validates the type of a value against the expected type."""
+    type_mapping = {
+        "string": str,
+        "number": (int, float),
+        "boolean": bool,
+        "object": dict,
+        "array": list
+    }
+    if "array" in expected_type:
+        if not isinstance(value, list):
+            return False, f"Expected array but found {type(value).__name__}"
+        item_type = expected_type.split("<")[1][:-1]
+        for item in value:
+            is_valid, _ = validate_type(item, item_type)
+            if not is_valid:
+                return False, f"Array contains invalid item of type {type(item).__name__}"
+        return True, None
+    elif expected_type in type_mapping:
+        if not isinstance(value, type_mapping[expected_type]):
+            return False, f"Expected {expected_type} but found {type(value).__name__}"
+        return True, None
+    else:
+        print(value)
+        return False, f"{type(value).__name__} expected type: {expected_type}"
 
-    def get_value_from_path(data, path):
-        keys = path.split(".")
-        for key in keys:
-            if isinstance(data, dict) and key in data:
-                data = data[key]
-            else:
-                return None
-        return data
+def validate_json(record, schema):
+    """Validates a JSON record against the extracted schema."""
+    errors = []
+    for key, expected_type in schema.items():
+        keys = key.split(".")
+        current_value = record
+        try:
+            for k in keys:
+                if k == "items":
+                    continue
+                current_value = current_value[k]
+        except (KeyError, TypeError):
+            errors.append(f"Missing or invalid path '{key}'")
+            continue
+        is_valid, error = validate_type(current_value, expected_type)
+        if not is_valid:
+            errors.append(f"Path '{key}': {error}")
+    return errors
 
-    for path, expected_type in terminal_paths_and_types:
-        actual_value = get_value_from_path(record, path)
-        actual_type = type(actual_value).__name__ if actual_value is not None else None
-
-        python_to_json_types = {
-            "str": "string",
-            "int": "integer",
-            "bool": "boolean",
-            "list": "array",
-        }
-        actual_type_json = python_to_json_types.get(actual_type, "unknown")
-
-        if actual_value is None:
-            validation_results.append((path, "Missing", expected_type))
-        elif actual_type_json != expected_type:
-            validation_results.append((path, "Type Mismatch", f"Expected {expected_type}, Got {actual_type_json}"))
-        else:
-            validation_results.append((path, "Valid", expected_type))
+def main():
+    vla_path = r"C:\Egyetem\szakdoga\szakdoga\szakdoga\Backend\app\VLA.json"
+    records_path = r"C:\Egyetem\szakdoga\szakdoga\szakdoga\xapi_WALRUC.json"
+    output_path = r"C:\Egyetem\szakdoga\szakdoga\szakdoga\syntax_validation_result.json"
     
-    return validation_results
-
-validation_json_path = r"C:\\Egyetem\\szakdoga\\szakdoga\\szakdoga\\Backend\\app\\VLA.json"
-target_json_path = r"C:\Egyetem\szakdoga\szakdoga\szakdoga\xapi_WALRUC.json"
-
-with open(validation_json_path, "r") as val_file:
-    validation_json = json.load(val_file)
-
-with open(target_json_path, "r") as tgt_file:
-    target_json = json.load(tgt_file)
-
-schema_paths_and_types = extract_terminal_paths(validation_json["objectives"][0]["evaluation"]["schema"])
-
-if not isinstance(target_json, list):
-    target_json = [target_json]
-
-all_results = []
-
-for idx, record in enumerate(target_json):
-    validation_results = validate_terminal_paths(record, schema_paths_and_types)
-    all_results.append((idx, validation_results))
-
-output_file_path = r"C:\\Egyetem\\szakdoga\\szakdoga\\szakdoga\\syntax_validation_result.json"
-
-output_data = []
-all_paths_valid = True 
-
-for record_idx, results in all_results:
-    record_results = {"record_idx": record_idx + 1, "validations": []}
+    with open(vla_path, "r", encoding="utf-8") as vla_file:
+        vla = json.load(vla_file)
     
-    for path, status, details in results:
-        record_results["validations"].append({
-            "path": path,
-            "status": status,
-            "details": details
-        })
-        if status != "Valid":
-            all_paths_valid = False 
+    schema = extract_schema(vla["objectives"][0]["evaluation"]["schema"])
     
-    output_data.append(record_results)
+    with open(records_path, "r", encoding="utf-8") as records_file:
+        records = json.load(records_file)
+    
+    all_errors = []
+    for i, record in enumerate(records):
+        errors = validate_json(record, schema)
+        if errors:
+            all_errors.append({"record_index": i, "errors": errors})
+    
+    result = {
+        "status": "valid" if not all_errors else "invalid",
+        "errors": all_errors
+    }
+    with open(output_path, "w", encoding="utf-8") as output_file:
+        json.dump(result, output_file, indent=4)
+    
+    if all_errors:
+        print("invalid")
+    else:
+        print("valid")
 
-with open(output_file_path, 'w') as output_file:
-    json.dump(output_data, output_file, indent=4)
-
-if all_paths_valid:
-    print("valid")
-else:
-    print("invalid")
+if __name__ == "__main__":
+    main()

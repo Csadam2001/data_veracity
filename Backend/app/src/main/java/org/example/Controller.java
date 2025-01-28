@@ -33,7 +33,7 @@ public class Controller {
         List<String[]> typepath = data.get("typepath");
         List<String[]> typevalue = data.get("typevalue");
         try {
-            App.CreateVLA(paths, expectations,values,typepath, typevalue);
+            App.CreateVLA(paths, expectations,values,typepath,typevalue);
             return ResponseEntity.ok("Expectation created successfully!");
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,7 +55,7 @@ public class Controller {
     }
 
     @PostMapping("/get-conflict")
-    public ResponseEntity<Map<String, List<Map<String, Object>>>> receiveVlaFromConsumer(
+    public ResponseEntity<Map<String, List<Map<String, Object>>>> receiveVLA(
             @RequestBody List<Map<String, Object>> data) {
         try {
             List<List<String>> paths = new ArrayList<>();

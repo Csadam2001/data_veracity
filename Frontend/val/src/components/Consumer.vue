@@ -25,8 +25,6 @@
         <h2 id="Path-text">Expectation Type</h2>
         <button @click="expectationType = 'value'">Add Value Expectation</button>
 
-
-
         <div v-if="expectationType === 'value'" class="struct">
           <h3>Value Expectation</h3>
           <label for="dataType">Select Type:</label>
@@ -67,7 +65,7 @@
             <button @click="savevalueValidation('Record_Count')">Create Expectation</button>
           </div>
           <div v-if="selectedDataType === 'String_value'">
-            <label v-if="!selectedPath.length">No Path selected!</label>
+            <label v-if="!selectedPath.length">No Path selected! Select it under JSON structure!</label>
             <label v-if="selectedPath.length">Path:</label>
             <p>{{ selectedPath.join('.') }}</p>
             <input v-if="selectedPath.length" style="height: 30px; font-size: 15px;" v-model="selectValue3"
@@ -233,7 +231,7 @@ export default {
       this.getConflicts();
       this.moreExpectations = false;
     }
-    if(sharedState.first == false){
+    if (sharedState.first == false) {
       this.getjsontypes();
     }
     this.jsonStructure = sharedState.jsonfile;
@@ -243,6 +241,48 @@ export default {
       const response = await axios.post('http://localhost:8080/api/json_types', sharedState.jsonfile);
       const json = response.data;
       sharedState.types = json;
+      this.jsonStructure = this.buildJsonFromTypes(sharedState.types);
+    },
+    buildJsonFromTypes(types) {
+      const result = {};
+      let urlbuffer = [];
+      let isurl = false;
+      types.forEach(({ path, type }) => {
+        const keys = path.split('.');
+        let current = result;
+        keys.forEach((key, index) => {
+          if(key.includes("http") || isurl){
+            urlbuffer.push(key);
+            isurl = true;
+            if (index === keys.length - 1) {
+            key = urlbuffer.join('.');
+            urlbuffer = [];
+            isurl = false;
+        }
+          }
+          if(!isurl){
+          if (!current[key]) {
+            current[key] = index === keys.length - 1 ? this.mapTypeToValue(type) : {};
+          }
+          current = current[key];
+        }
+        });
+      });
+      return result;
+    },
+    mapTypeToValue(type) {
+      switch (type) {
+        case 'string':
+          return "";
+        case 'integer':
+          return 0;
+        case 'boolean':
+          return false;
+        case 'array':
+          return { };
+        default:
+          return null;
+      }
     },
     async getConflicts() {
       const rawData = sharedState.savedValidations.map(validation => {
@@ -318,19 +358,39 @@ export default {
         case "Descending":
           this.buildval("Sequiental", ["Sequential_Timestamp"], exp);
           break;
-        case "Range":
-          this.buildval("Timestamp_Within_Range", [this.selectValue2], this.selectValue3);
+        case "Range":{
+          const parsed = parseInt(this.selectValue3, 10);
+          if (!isNaN(parsed) && Number.isInteger(parsed) && String(parsed) === this.selectValue3.trim()){
+            this.buildval("Timestamp_Within_Range", [this.selectValue2], this.selectValue3);
+          }
+          alert("Timestamp can't be String!");
+          this.selectValue3 = "";
           break;
+        }
         case "Record_Count":
           if (this.selectValue2 == "Min_Max") {
-            this.buildval("Record_Count", [this.selectValue2], [this.selectValue3, this.selectValue4]);
+            if (Number(this.selectValue3) >= Number(this.selectValue4)) {
+              alert("Minimum can't be greater or equal than Maximum!");
+              this.selectValue3 = "";
+              this.selectValue4 = "";
+            }
+            else {
+              this.buildval("Record_Count", [this.selectValue2], [this.selectValue3, this.selectValue4]);
+            }
           }
           else {
             this.buildval("Record_Count", [this.selectValue2], this.selectValue3);
           }
           break;
         case "String_value":
-          this.buildval("String_value", this.selectedPath, this.selectValue3);
+          console.log(typeof this.selectValue3);
+          if(this.selectValue3 != ""){
+            this.buildval("String_value", this.selectedPath, this.selectValue3);
+          }
+          else{
+            alert("String_value can't be null!");
+            this.selectValue3 = "";
+          }
           break;
         case "Integer_value":
           this.buildval("Integer_value", this.selectedPath, this.selectValue3);
@@ -403,7 +463,7 @@ export default {
     async createExpectation() {
 
       let paths = sharedState.savedValidations
-        .filter(validation =>!this.arraysAreEqual(validation.path, ["saved"]))
+        .filter(validation => !this.arraysAreEqual(validation.path, ["saved"]))
         .map(validation => validation.path);
 
       let expectations = sharedState.savedValidations
@@ -415,9 +475,8 @@ export default {
         .map(validation => validation.value);
       let typepath = sharedState.types.map(validation => [validation.path]);
       let typevalue = sharedState.types.map(validation => [validation.type]);
-
       try {
-        await axios.post('http://localhost:8080/api/create-expectation', { paths, expectations, values, typepath,typevalue });
+        await axios.post('http://localhost:8080/api/create-expectation', { paths, expectations, values, typepath, typevalue });
         alert("Expectation created successfully!");
         this.conValidation = [];
         this.vlacreate = false;

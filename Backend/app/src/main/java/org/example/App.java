@@ -1,16 +1,13 @@
 package org.example;
 
 import org.example.config.*;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import java.util.List;
 import java.io.IOException;
 import java.util.Date;
-import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.io.File;
@@ -29,21 +26,21 @@ public class App {
     public static void CreateVLA(List<String[]> paths, List<String[]> expectations, List<String[]> values,
             List<String[]> typepath, List<String[]> typevalue) {
         Meta meta = createMeta();
-
         Map<String, Object> unifiedSchema = new HashMap<>();
         List<Objective> objectives = new ArrayList<>();
         List<Objective> valueObj = new ArrayList<>();
         for (int i = 0; i < typepath.size(); i++) {
             String[] typepathArray = typepath.get(i);
             String[] typevalueArray = typevalue.get(i);
+
             mergeProperties(unifiedSchema, typepathArray, typevalueArray);
+
         }
 
         for (int i = 0; i < paths.size(); i++) {
             String[] pathArray = paths.get(i);
             String[] valueArray = values.get(i);
             String[] expArray = expectations.get(i);
-
             Objective objective = createObjective(expArray[0], pathArray, valueArray);
             valueObj.add(objective);
 
@@ -88,27 +85,54 @@ public class App {
 
     private static void mergeProperties(Map<String, Object> root, String[] path, String[] value) {
         Map<String, Object> current = root;
-    
+        List<String> urlBuffer = new ArrayList<>();
+        Boolean url = false;
+
         for (String fullPath : path) {
             String[] parts = fullPath.split("\\.");
-    
             for (int i = 0; i < parts.length; i++) {
                 String part = parts[i];
-                boolean isLast = (i == parts.length - 1);
-    
-                if (!current.containsKey(part)) {
-                    Map<String, Object> newNode = new HashMap<>();
-                    if (isLast) {
-                        newNode.put("type", value[0].toLowerCase());
-                    } else {
-                        newNode.put("type", "object");
-                        newNode.put("properties", new HashMap<>());
+                if (part.contains("http://") || part.startsWith("https://") || url) {
+                    urlBuffer.add(part);
+                    url = true;
+                    if (i < parts.length - 1) {
+                        continue;
                     }
-                    current.put(part, newNode);
+                    url = false;
+                    part = String.join(".", urlBuffer);
+                    urlBuffer.clear();
                 }
-    
-                if (!isLast) {
-                    current = (Map<String, Object>) ((Map<String, Object>) current.get(part)).get("properties");
+                if (!url) {
+                    boolean isLast = (i == parts.length - 1);
+
+                    if (!current.containsKey(part)) {
+                        Map<String, Object> newNode = new HashMap<>();
+                        if (isLast) {
+                            newNode.put("type", value[0].toLowerCase());
+                        } else {
+                            newNode.put("type", "object");
+                            newNode.put("properties", new HashMap<>());
+                        }
+                        current.put(part, newNode);
+                    }
+
+                    if (!isLast) {
+
+                        Object next = current.get(part);
+                        if (next instanceof Map) {
+                            Map<String, Object> nextMap = (Map<String, Object>) next;
+
+                            if (!nextMap.containsKey("properties")) {
+                                nextMap.put("properties", new HashMap<>());
+                            }
+
+                            current = (Map<String, Object>) nextMap.get("properties");
+                        } else {
+                            throw new IllegalStateException(
+                                    "Expected a map at " + part + " but found: "
+                                            + (next != null ? next.getClass() : "null"));
+                        }
+                    }
                 }
             }
         }
@@ -142,13 +166,13 @@ public class App {
                         } catch (NumberFormatException e) {
                             System.err.println("Invalid value for exact: " + valueArray[0]);
                         }
-                    } else if("Max".equalsIgnoreCase(pathArray[0])){
+                    } else if ("Max".equalsIgnoreCase(pathArray[0])) {
                         try {
                             evaluation.setMax(Integer.parseInt(valueArray[0]));
                         } catch (NumberFormatException e) {
                             System.err.println("Invalid value for max: " + valueArray[0]);
                         }
-                    }else if("Min_Max".equalsIgnoreCase(pathArray[0])){
+                    } else if ("Min_Max".equalsIgnoreCase(pathArray[0])) {
                         try {
                             evaluation.setMin(Integer.parseInt(valueArray[0]));
                         } catch (NumberFormatException e) {
@@ -159,8 +183,7 @@ public class App {
                         } catch (NumberFormatException e) {
                             System.err.println("Invalid value for max: " + valueArray[1]);
                         }
-                    }
-                    else{
+                    } else {
                         try {
                             evaluation.setMin(Integer.parseInt(valueArray[0]));
                         } catch (NumberFormatException e) {
@@ -258,84 +281,43 @@ public class App {
     public static Map<String, List<Map<String, Object>>> resolveConflicts(
             List<List<String>> paths, List<String> exp, List<List<Object>> values) {
 
-        Map<List<String>, List<String>> pathToExps = new HashMap<>();
-        Map<List<String>, List<List<Object>>> pathToValues = new HashMap<>();
-
-        for (int i = 0; i < paths.size(); i++) {
-            List<String> path = paths.get(i);
-            String expKey = exp.get(i);
-            List<Object> value = values.get(i);
-
-            pathToExps.computeIfAbsent(path, k -> new ArrayList<>()).add(expKey);
-            pathToValues.computeIfAbsent(path, k -> new ArrayList<>()).add(value);
-        }
-
         List<Map<String, Object>> result = new ArrayList<>();
         List<Map<String, Object>> result2 = new ArrayList<>();
-
-        for (Map.Entry<List<String>, List<String>> entry : pathToExps.entrySet()) {
-            List<String> path = entry.getKey();
-            List<String> exps = entry.getValue();
-            List<List<Object>> associatedValues = pathToValues.get(path);
-
-            if (exps.size() > 1) {
-                boolean hasConflict = false;
-                boolean hasRequired = exps.contains("Required");
-
-                for (int i = 0; i < exps.size(); i++) {
-                    for (int j = i + 1; j < exps.size(); j++) {
-                        String type1 = exps.get(i);
-                        String type2 = exps.get(j);
-                        if (!isValidCombination(type1, type2)) {
-                            hasConflict = true;
-                            break;
-                        }
-                    }
-                    if (hasConflict)
-                        break;
-                }
-
-                if (hasConflict) {
-                    for (int i = 0; i < exps.size(); i++) {
-                        String expType = exps.get(i);
-                        List<Object> value = associatedValues.get(i);
+        List<Integer> conflictnums = new ArrayList<>();
+        boolean hasconflict = false;
+        for (int i = 0; i < paths.size(); i++) {
+            for (int j = i + 1; j < paths.size(); j++) {
+                String expKey = exp.get(i);
+                String expKey2 = exp.get(j);
+                if (expKey.equals(expKey2)) {
+                    if (hasConflict(expKey, expKey2, paths.get(i), paths.get(j), values.get(i), values.get(j))) {
                         Map<String, Object> conflictEntry = new HashMap<>();
-                        conflictEntry.put("path", new ArrayList<>(path));
-                        conflictEntry.put("type", Collections.singletonList(expType));
-                        conflictEntry.put("value", value);
+                        conflictEntry.put("path", new ArrayList<>(paths.get(i)));
+                        conflictEntry.put("type", Collections.singletonList(exp.get(i)));
+                        conflictEntry.put("value", values.get(i));
 
                         result.add(conflictEntry);
-                    }
+                        Map<String, Object> conflictEntry2 = new HashMap<>();
+                        conflictEntry2.put("path", new ArrayList<>(paths.get(j)));
+                        conflictEntry2.put("type", Collections.singletonList(exp.get(j)));
+                        conflictEntry2.put("value", values.get(j));
 
-                    if (hasRequired) {
-                        int requiredIndex = exps.indexOf("Required");
-                        Map<String, Object> nonConflictEntry = new HashMap<>();
-                        nonConflictEntry.put("path", new ArrayList<>(path));
-                        nonConflictEntry.put("type", Collections.singletonList("Required"));
-                        nonConflictEntry.put("value", associatedValues.get(requiredIndex));
-
-                        result2.add(nonConflictEntry);
+                        result.add(conflictEntry2);
+                        hasconflict = true;
+                        conflictnums.add(i);
+                        conflictnums.add(j);
                     }
-                } else {
-                    for (int i = 0; i < exps.size(); i++) {
-                        Map<String, Object> nonConflictEntry = new HashMap<>();
-                        nonConflictEntry.put("path", new ArrayList<>(path));
-                        nonConflictEntry.put("type", Collections.singletonList(exps.get(i)));
-                        nonConflictEntry.put("value", associatedValues.get(i));
-
-                        result2.add(nonConflictEntry);
-                    }
-                }
-            } else {
-                for (int i = 0; i < exps.size(); i++) {
-                    Map<String, Object> nonConflictEntry = new HashMap<>();
-                    nonConflictEntry.put("path", new ArrayList<>(path));
-                    nonConflictEntry.put("type", Collections.singletonList(exps.get(i)));
-                    nonConflictEntry.put("value", associatedValues.get(i));
-                    ;
-                    result2.add(nonConflictEntry);
                 }
             }
+            if (!hasconflict && !conflictnums.contains(i)) {
+                Map<String, Object> nonConflictEntry = new HashMap<>();
+                nonConflictEntry.put("path", new ArrayList<>(paths.get(i)));
+                nonConflictEntry.put("type", Collections.singletonList(exp.get(i)));
+                nonConflictEntry.put("value", values.get(i));
+                result2.add(nonConflictEntry);
+
+            }
+            hasconflict = false;
         }
 
         Map<String, List<Map<String, Object>>> combinedResults = new HashMap<>();
@@ -344,15 +326,42 @@ public class App {
         return combinedResults;
     }
 
-    private static boolean isValidCombination(String type1, String type2) {
-        if ((type1.equals("Required") && type2.equals("String")) ||
-                (type1.equals("String") && type2.equals("Required")) ||
-                (type1.equals("Required") && type2.equals("Integer")) ||
-                (type1.equals("Integer") && type2.equals("Required")) ||
-                (type1.equals("Required") && type2.equals("Boolean")) ||
-                (type1.equals("Boolean") && type2.equals("Required")) ||
-                (type1.equals("Required") && type2.equals("Required"))) {
+    private static boolean hasConflict(String expkey, String expkey2, List<String> path1, List<String> path2,
+            List<Object> value1, List<Object> value2) {
+        if (expkey.equals("Record_Count") && expkey2.equals("Record_Count")) {
+            if (path1.get(0).equals("Exact") || path2.get(0).equals("Exact")) {
+                return true;
+            }
+
+            if (path1.get(0).equals("Min_Max") || path2.get(0).equals("Min_Max")) {
+                return true;
+            }
+
+            if (path1.get(0).equals("Min") && path2.get(0).equals("Max")) {
+                int min = Integer.parseInt((String) value1.get(0));
+                int max = Integer.parseInt((String) value2.get(0));
+                if (min >= max) {
+                    return true;
+                }
+            }
+            if (path1.get(0).equals("Max") && path2.get(0).equals("Min")) {
+                int max = Integer.parseInt((String) value1.get(0));
+                int min = Integer.parseInt((String) value2.get(0));
+                if (max <= min) {
+                    return true;
+                }
+            }
+        }
+        if (expkey.equals("Sequiental") && expkey2.equals("Sequiental")) {
             return true;
+        }
+        if (expkey.equals("Timestamp_Within_Range") && expkey2.equals("Timestamp_Within_Range")) {
+            return true;
+        }
+        if (expkey.equals("String_value") && expkey2.equals("String_value")) {
+            if (path1.get(0).equals(path2.get(0))) {
+                return true;
+            }
         }
         return false;
     }
@@ -363,45 +372,61 @@ public class App {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(jsonString);
-
             result.addAll(parseJsonRecursive(rootNode, new ArrayList<>()));
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return result;
     }
 
-    private static List<Map<String, String>> parseJsonRecursive(JsonNode value, List<String> path) {
+    private static List<Map<String, String>> parseJsonRecursive(JsonNode node, List<String> path) {
         List<Map<String, String>> result = new ArrayList<>();
 
-        if (value.isObject()) {
-            value.fieldNames().forEachRemaining(fieldName -> {
-                List<String> newPath = new ArrayList<>(path);
-                newPath.add(fieldName);
-                result.addAll(parseJsonRecursive(value.get(fieldName), newPath));
+        if (node.isObject()) {
+            node.fieldNames().forEachRemaining(fieldName -> {
+                JsonNode childNode = node.get(fieldName);
+                if (fieldName.contains("http")) {
+                    result.add(createResult(path, "array"));
+
+                }
+                else{
+
+                if (fieldName.equals("type")) {
+                    if (!childNode.isTextual()) {
+                        List<String> newPath = new ArrayList<>(path);
+                        newPath.add(fieldName);
+                        result.addAll(parseJsonRecursive(childNode, newPath));
+                    } else {
+                        String type = childNode.asText();
+                        result.add(createResult(path, type));
+                    }
+                } else if (fieldName.equals("items")) {
+                    List<String> newPath = new ArrayList<>(path);
+                    newPath.add("items");
+                    result.addAll(parseJsonRecursive(childNode, newPath));
+                } else if (!fieldName.equals("properties")) {
+                    List<String> newPath = new ArrayList<>(path);
+                    newPath.add(fieldName);
+                    result.addAll(parseJsonRecursive(childNode, newPath));
+                } else {
+                    result.addAll(parseJsonRecursive(childNode, path));
+                }
+            }
             });
-        } else if (value.isArray()) {
-            result.add(createResult(path, "Array"));
-        } else if (value.isTextual()) {
-            result.add(createResult(path, "String"));
-        } else if (value.isNumber()) {
-            result.add(createResult(path, "Integer"));
-        } else if (value.isBoolean()) {
-            result.add(createResult(path, "Boolean"));
-        } else {
-            result.add(createResult(path, "Unknown"));
+        } else if (node.isArray()) {
+            for (JsonNode arrayItem : node) {
+                result.addAll(parseJsonRecursive(arrayItem, path));
+            }
         }
 
         return result;
     }
 
     private static Map<String, String> createResult(List<String> path, String type) {
-        String pathString = String.join(".", path); 
+        String pathString = String.join(".", path);
         Map<String, String> entry = new HashMap<>();
         entry.put("path", pathString);
         entry.put("type", type);
         return entry;
     }
-
 }

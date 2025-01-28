@@ -10,18 +10,15 @@ public class ValidateDB {
         String pythonSyntaxScriptPath = "C:\\Egyetem\\szakdoga\\szakdoga\\szakdoga\\validation\\validate_from_json.py";
         String pythonValueScriptPath = "C:\\Egyetem\\szakdoga\\szakdoga\\szakdoga\\validation\\validate_value_exp.py";
         String pythonInterpreterPath = "C:\\Egyetem\\szakdoga\\szakdoga\\szakdoga\\validation\\my_venv\\Scripts\\python.exe";
-
         boolean syntaxValidation = false;
         boolean valueValidation = false;
 
         try {
             String syntaxResult = runPythonScript(pythonInterpreterPath, pythonSyntaxScriptPath);
             syntaxValidation = "valid".equals(parseValidationResult(syntaxResult));
-            System.out.println(syntaxResult);
 
             String valueResult = runPythonScript(pythonInterpreterPath, pythonValueScriptPath);
             valueValidation = "valid".equals(parseValidationResult(valueResult));
-            System.out.println(valueResult);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -47,6 +44,7 @@ public class ValidateDB {
 
     private static String parseValidationResult(String result) {
         String lowerCaseResult = result.trim().toLowerCase();
+        System.out.println(lowerCaseResult);
         if (lowerCaseResult.equals("valid")) {
             return "valid";
         } else if (lowerCaseResult.equals("invalid")) {
