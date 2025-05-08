@@ -3,18 +3,19 @@
     <li v-for="(value, key) in node" :key="key">
       <div>
         <div @click="handleNodeClick(key, value)">
-          <span>{{ key }}</span>
-          <span v-if="isExpandable(value)"> &#9654; </span>
+          <span :style="{ marginTop: isExpandable(value) ? '1px' : '-3px' }">{{ key }}</span>
+          <span style="margin-left: 10px; { marginTop: isExpandable(value) ? '1px' : '-3px' }" v-if="isExpandable(value)"> &#9654; </span>
         </div>
-        <div style="height: 25px; margin-left: 20px">
-          <select style="font-size: 20px;" v-if="typeMap[pathKey([...path, key])] !== undefined "
-            v-model="typeMap[pathKey([...path, key])]" @change="updateType([...path, key])">
-            <option v-for="option in types" :key="option" :value="option">
-              {{ option }}
-            </option>
-          </select>
+        <div style="height: 25px; margin-left: 20px; margin-bottom: 15px;">
+          <select style="font-size: 20px;"
+                  v-if="typeMap[pathKey([...path, key])] !== undefined && types.includes(typeMap[pathKey([...path, key])])"
+                  v-model="typeMap[pathKey([...path, key])]"
+                  @change="updateType([...path, key])">
+          <option v-for="option in types" :key="option" :value="option">
+            {{ option }}
+          </option>
+        </select>
         </div>
-
         <JsonTree v-if="isExpandable(value) && expandedKeys.includes(key)" :node="value" :path="[...path, key]"
           @keySelected="$emit('keySelected', $event)" />
       </div>
@@ -82,10 +83,8 @@ export default {
     this.valuetypes.push({ path: pathString, type: newType});
   }
   sharedState.types = this.valuetypes;
-
 }
 ,
-
     isExpandable(value) {
       return typeof value === 'object' && value !== null && !Array.isArray(value);
     },

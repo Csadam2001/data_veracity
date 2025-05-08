@@ -37,7 +37,6 @@ def validate_type(value, expected_type):
             return False, f"Expected {expected_type} but found {type(value).__name__}"
         return True, None
     else:
-        print(value)
         return False, f"{type(value).__name__} expected type: {expected_type}"
 
 def validate_json(record, schema):
@@ -60,9 +59,9 @@ def validate_json(record, schema):
     return errors
 
 def main():
-    vla_path = r"C:\Egyetem\szakdoga\szakdoga\szakdoga\Backend\app\VLA.json"
-    records_path = r"C:\Egyetem\szakdoga\szakdoga\szakdoga\xapi_WALRUC.json"
-    output_path = r"C:\Egyetem\szakdoga\szakdoga\szakdoga\syntax_validation_result.json"
+    vla_path = r"C:\\Egyetem\\vla\\data_veracity\Backend\\app\\VLA.json"
+    records_path = r"C:\\Egyetem\\vla\\data_veracity\\xapi_WALRUC.json"
+    output_path = r"C:\\Egyetem\\vla\\data_veracity\\syntax_validation_result.json"
     
     with open(vla_path, "r", encoding="utf-8") as vla_file:
         vla = json.load(vla_file)

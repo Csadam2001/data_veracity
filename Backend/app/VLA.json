@@ -5,7 +5,8 @@
     "consumer" : "consumerID",
     "dataType" : "JSON",
     "status" : "signed",
-    "timestamp" : "2025-01-07T13:28:28.354Z"
+    "timestamp" : "2025-05-08T20:30:27.294Z",
+    "id" : "18c1f66e-8278-4552-99e7-ba05ecec5ca2"
   },
   "objectives" : [ {
     "description" : "xAPI schema validation",
@@ -54,7 +55,7 @@
                     "type" : "object",
                     "properties" : {
                       "name" : {
-                        "type" : "integer"
+                        "type" : "string"
                       },
                       "homePage" : {
                         "type" : "string"
@@ -104,7 +105,12 @@
                             "type" : "object",
                             "properties" : {
                               "definition" : {
-                                "type" : "object"
+                                "type" : "object",
+                                "properties" : {
+                                  "type" : {
+                                    "type" : "string"
+                                  }
+                                }
                               },
                               "id" : {
                                 "type" : "string"
@@ -119,7 +125,7 @@
                     }
                   },
                   "extensions" : {
-                    "type" : "object"
+                    "type" : "array"
                   }
                 }
               },
@@ -136,15 +142,10 @@
                     "type" : "object",
                     "properties" : {
                       "extensions" : {
-                        "type" : "object"
+                        "type" : "array"
                       },
                       "name" : {
-                        "type" : "object",
-                        "properties" : {
-                          "en" : {
-                            "type" : "string"
-                          }
-                        }
+                        "type" : "array"
                       },
                       "type" : {
                         "type" : "string"

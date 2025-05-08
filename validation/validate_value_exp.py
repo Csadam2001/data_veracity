@@ -3,8 +3,8 @@ import pandas as pd
 import great_expectations as ge
 from datetime import datetime, timedelta, timezone
 
-vla_path = r"C:\Egyetem\szakdoga\szakdoga\szakdoga\Backend\app\VLA.json"
-data_path = r"C:\Egyetem\szakdoga\szakdoga\szakdoga\xapi_WALRUC.json"
+vla_path = r"C:\\Egyetem\\vla\\data_veracity\Backend\\app\\VLA.json"
+data_path = r"C:\\Egyetem\\vla\\data_veracity\\xapi_WALRUC.json"
 results = []
 
 with open(vla_path, "r",  encoding="utf-8") as f:
@@ -106,7 +106,7 @@ for objective in vla["objectives"]:
         result = apply_validation(objective)
         validation_results_nottime.append(result)
 
-output_file_path = r"C:\\Egyetem\\szakdoga\\szakdoga\\szakdoga\\value_validation_result.json"
+output_path = r"C:\\Egyetem\\vla\\data_veracity\\value_validation_result.json"
 validation_data = vla
 validation_rules = validation_data.get("objectives", [])
 data_records = data_time

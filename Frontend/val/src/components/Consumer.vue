@@ -1,8 +1,9 @@
 <template>
   <div class="header">
-    <img src="../assets/images.png" alt="Header Image" />
+    <img style=" height: 130px; margin-right: 30px;" src="../assets/images.png" alt="Header Image" />
     <label class="header-label">Veracity Level Agreement Creating Site</label>
-    <label class="header_role">Role: Consumer</label>
+    <label class="header_role">Role: Producer</label>
+    <img style=" padding-left: 20px; height: 100px; background-color: white;" src="../assets/LOGO-PROMETHEUS-X.png" alt="Header Image" />
   </div>
   <hr />
   <div v-if="moreExpectations">
@@ -22,7 +23,7 @@
       </div>
 
       <div class="selector">
-        <h2 id="Path-text">Expectation Type</h2>
+        <h1 id="Path-text">Expectation Type</h1>
         <button @click="expectationType = 'value'">Add Value Expectation</button>
 
         <div v-if="expectationType === 'value'" class="struct">
@@ -34,13 +35,13 @@
             </option>
           </select>
           <div v-if="selectedDataType === 'Timestamp'">
-            <button @click="selectValue1 = 'seq'">Sequential Expectation</button>
-            <button @click="selectValue1 = 'range'; selectValue2 = 'choose'">
+            <button style="margin-top: 10px; margin-bottom: 10px;" @click="selectValue1 = 'seq'">Sequential Expectation</button>
+            <button style="margin-bottom: 10px;" @click="selectValue1 = 'range'; selectValue2 = 'choose'">
               Time Range Expectation
             </button>
 
             <div v-if="selectValue1 === 'seq'">
-              <button @click="savevalueValidation('Ascending')">Ascending</button>
+              <button style="margin-top: 10px; margin-bottom: 10px; margin-right: 10px;"  @click="savevalueValidation('Ascending')">Ascending</button>
               <button @click="savevalueValidation('Descending')">Descending</button>
             </div>
             <div v-if="selectValue1 === 'range'">
@@ -50,11 +51,11 @@
                 </option>
               </select>
               <input style="height: 30px; font-size: 15px;" v-model="selectValue3" placeholder="Range Value" />
-              <button @click="savevalueValidation('Range')">Create Expectation</button>
+              <button style="margin-top: 10px;" @click="savevalueValidation('Range')">Create Expectation</button>
             </div>
           </div>
           <div v-if="selectedDataType === 'Record_count'">
-            <select style="font-size: 20px;" v-model="selectValue2" id="rangeType">
+            <select style="font-size: 20px; margin-top: 10px;" v-model="selectValue2" id="rangeType">
               <option v-for="option in countoptions" :key="option.value" :value="option.value">
                 {{ option.value }}
               </option>
@@ -62,7 +63,7 @@
             <input style="height: 30px; font-size: 15px;" v-model="selectValue3" placeholder="Value" />
             <input v-if="selectValue2 === 'Min_Max'" style="margin-left: 110px; height: 30px; font-size: 15px;"
               v-model="selectValue4" placeholder="Value2" />
-            <button @click="savevalueValidation('Record_Count')">Create Expectation</button>
+            <button style="margin-top: 10px;" @click="savevalueValidation('Record_Count')">Create Expectation</button>
           </div>
           <div v-if="selectedDataType === 'String_value'">
             <label v-if="!selectedPath.length">No Path selected! Select it under JSON structure!</label>
@@ -70,7 +71,7 @@
             <p>{{ selectedPath.join('.') }}</p>
             <input v-if="selectedPath.length" style="height: 30px; font-size: 15px;" v-model="selectValue3"
               placeholder="Value1" />
-            <button @click="savevalueValidation('String_value')">Create Expectation</button>
+            <button style="margin-top: 10px;" @click="savevalueValidation('String_value')">Create Expectation</button>
 
           </div>
           <div v-if="selectedDataType === 'Integer_value'">
@@ -79,7 +80,7 @@
             <p>{{ selectedPath.join('.') }}</p>
             <input v-if="selectedPath.length" style="height: 30px; font-size: 15px;" v-model="selectValue3"
               placeholder="Value1" />
-            <button @click="savevalueValidation('Integer_value')">Create Expectation</button>
+            <button style="margin-top: 10px;" @click="savevalueValidation('Integer_value')">Create Expectation</button>
 
           </div>
           <div v-if="end">
@@ -91,9 +92,9 @@
       <div class="struct saved">
         <h3>Newest VLA:</h3>
         <label v-if="!conValidation.length"> No validations yet!</label>
-        <div v-if="conValidation.length">
+        <div  v-if="conValidation.length">
           <ul>
-            <li v-for="(validation, index) in conValidation" :key="index">
+            <li style="margin-bottom: 20px;" v-for="(validation, index) in conValidation" :key="index">
               {{ validation.type }} - {{ validation.path.join('.') }} -
               <span v-if="Array.isArray(validation.value)">
                 {{ validation.value.join(', ') }}
@@ -101,12 +102,12 @@
               <span v-else>
                 {{ validation.value }}
               </span>
-              <button v-if="validation.type !== 'Syntax'" @click="removeval(index)">Remove</button>
+              <button style="margin-left: 25px;" v-if="validation.type !== 'Syntax'" @click="removeval(index)">Remove</button>
             </li>
-          </ul>
+          </ul> 
           <button @click="clearValidation">Delete VLA</button>
-          <button v-if="!this.getconsign()" @click="sign">Sign</button>
-          <button v-if="this.getconsign()" @click="sendVlaToProducer">Send VLA to Producer</button>
+          <button style="margin-left: 20px;" v-if="!this.getconsign()" @click="sign">Sign</button>
+          <button style="margin-left: 20px;" v-if="this.getconsign()" @click="sendVlaToProducer">Send VLA to Producer</button>
 
         </div>
         <label v-if="this.getconsign()">Signed!</label>
@@ -129,8 +130,8 @@
               {{ validation.value }}
             </span>
             <div v-if="!validation.status">
-              <button v-if="validation.type !== 'Syntax'" @click="acceptValidation(index)">Accepted</button>
-              <button v-if="validation.type !== 'Syntax'" @click="removeValidation(index)">Removed</button>
+              <button style="margin-top: 20px; margin-bottom: 10px; margin-right: 25px;" @click="acceptValidation(index)">Accepted</button>
+              <button @click="removeValidation(index)">Removed</button>
             </div>
             <label>
               {{ validation.status }}
@@ -224,6 +225,7 @@ export default {
   created() {
 
     if (sharedState.consign == true && sharedState.prosign == true) {
+      console.log(sharedState.types);
       this.getConflicts();
       this.createExpectation();
     }
@@ -231,10 +233,8 @@ export default {
       this.getConflicts();
       this.moreExpectations = false;
     }
-    if (sharedState.first == false) {
-      this.getjsontypes();
-    }
-    this.jsonStructure = sharedState.jsonfile;
+    this.getjsontypes();
+    console.log(sharedState.types);
   },
   methods: {
     async getjsontypes() {
@@ -353,10 +353,10 @@ export default {
     savevalueValidation(exp) {
       switch (exp) {
         case "Ascending":
-          this.buildval("Sequiental", ["Sequential_Timestamp"], exp);
+          this.buildval("Sequential", ["Sequential_Timestamp"], exp);
           break;
         case "Descending":
-          this.buildval("Sequiental", ["Sequential_Timestamp"], exp);
+          this.buildval("Sequential", ["Sequential_Timestamp"], exp);
           break;
         case "Range":{
           const parsed = parseInt(this.selectValue3, 10);
@@ -383,7 +383,6 @@ export default {
           }
           break;
         case "String_value":
-          console.log(typeof this.selectValue3);
           if(this.selectValue3 != ""){
             this.buildval("String_value", this.selectedPath, this.selectValue3);
           }
@@ -461,7 +460,6 @@ export default {
     },
 
     async createExpectation() {
-
       let paths = sharedState.savedValidations
         .filter(validation => !this.arraysAreEqual(validation.path, ["saved"]))
         .map(validation => validation.path);
@@ -527,29 +525,47 @@ export default {
 
 <style scoped>
 button {
-  margin: 5px;
-  height: 30px;
-  font-size: 15px;
+    font-size: 22px;
+    background-color: #17243F;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    padding: 8px 8px 8px 8px;
 }
-
+h1{
+  font-weight: 400;
+}
+h2{
+  font-weight: 400;
+}
+h3{
+  font-weight: 400;
+}
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: darkgray;
+  background-color: white;
 }
 
 .header-label {
+  height: 30px;
+  padding: 65px;
   flex-grow: 1.3;
   text-align: center;
   font-size: 30px;
-  font-weight: bold;
+  color: white;
+  background-color: #17243F;
+  padding-left: 10px;
 }
 
 .header_role {
+  height: 30px;
+  padding: 65px;
   flex-grow: 0.1;
   font-size: 30px;
-  font-weight: bold;
+  color: white;
+  background-color: #17243F;
 }
 
 .temp {

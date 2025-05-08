@@ -2,17 +2,18 @@ package org.example.database;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.file.Paths;
 import java.io.IOException;
 
 public class ValidateDB {
 
     public static ValidationResult Validate() {
-        String pythonSyntaxScriptPath = "C:\\Egyetem\\szakdoga\\szakdoga\\szakdoga\\validation\\validate_from_json.py";
-        String pythonValueScriptPath = "C:\\Egyetem\\szakdoga\\szakdoga\\szakdoga\\validation\\validate_value_exp.py";
-        String pythonInterpreterPath = "C:\\Egyetem\\szakdoga\\szakdoga\\szakdoga\\validation\\my_venv\\Scripts\\python.exe";
+        
+        String pythonSyntaxScriptPath = Paths.get("../../validate_from_json.py").toAbsolutePath().normalize().toString();
+        String pythonValueScriptPath = Paths.get("../../validate_value_exp.py").toAbsolutePath().normalize().toString();
+        String pythonInterpreterPath = Paths.get("../../validation/my_env/Scripts/python.exe").toAbsolutePath().normalize().toString();
         boolean syntaxValidation = false;
         boolean valueValidation = false;
-
         try {
             String syntaxResult = runPythonScript(pythonInterpreterPath, pythonSyntaxScriptPath);
             syntaxValidation = "valid".equals(parseValidationResult(syntaxResult));

@@ -1,8 +1,9 @@
 <template>
     <div class="header">
-        <img src="../assets/images.png" alt="Header Image" />
-        <label class="header-label">Veracity Level Agreement Validation Site</label>
-        <label class="header_role">Role: Consumer</label>
+        <img style="width: 250px; height: 130px; margin-right: 30px;" src="../assets/images.png" alt="Header Image" />
+    <img style="margin-left: -20px; width: 250px; height: 100px; background-color: white;" src="../assets/LOGO-PROMETHEUS-X.png" alt="Header Image" />
+    <label class="header-label">Veracity Level Agreement Creating Site</label>
+    <label class="header_role">Role: Consumer</label>
     </div>
     <hr />
     <div class="temp">
@@ -80,6 +81,7 @@ export default {
                 }
             });
         }
+        
     },
     methods: {
         async createExpectation() {
@@ -100,24 +102,40 @@ export default {
 </script>
 
 <style>
+h1{
+  font-weight: 400;
+}
+h2{
+  font-weight: 400;
+}
+h3{
+  font-weight: 400;
+}
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: darkgray;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
 }
 
 .header-label {
-    flex-grow: 1.3;
-    text-align: center;
-    font-size: 30px;
-    font-weight: bold;
+  height: 30px;
+  padding: 65px;
+  flex-grow: 1.3;
+  text-align: center;
+  font-size: 30px;
+  color: white;
+  background-color: #17243F;
+  padding-left: 10px;
 }
 
 .header_role {
-    flex-grow: 0.1;
-    font-size: 30px;
-    font-weight: bold;
+  height: 30px;
+  padding: 65px;
+  flex-grow: 0.1;
+  font-size: 30px;
+  color: white;
+  background-color: #17243F;
 }
 
 .temp {
@@ -135,11 +153,12 @@ export default {
 .valbutton {
     padding: 10px 20px;
     font-size: 23px;
-    background-color: lightblue;
+    background-color: #17243F;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     margin-top: 20px;
+    color: white;
 }
 
 .valbutton:disabled {

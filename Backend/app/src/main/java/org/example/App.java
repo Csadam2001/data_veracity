@@ -4,6 +4,7 @@ import org.example.config.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
+import java.util.UUID;
 import java.util.List;
 import java.io.IOException;
 import java.util.Date;
@@ -73,13 +74,15 @@ public class App {
     }
 
     private static Meta createMeta() {
-        Meta meta = new Meta(null, null, null, null, null, null);
+        Meta meta = new Meta(null, null, null, null, null, null,null);
         meta.setDescription("VLA example for xAPI traces");
         meta.setProvider("providerID");
         meta.setConsumer("consumerID");
         meta.setDataType("JSON");
         meta.setStatus("signed");
         meta.setTimestamp(new Date().toInstant().toString());
+        String uniqueID = UUID.randomUUID().toString();
+        meta.setId(uniqueID);
         return meta;
     }
 

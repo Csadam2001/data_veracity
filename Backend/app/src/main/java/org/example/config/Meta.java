@@ -9,14 +9,23 @@ public class Meta {
     private String dataType;
     private String status;
     private String timestamp;
+    private String id;
 
-    public Meta(String description, String provider, String consumer, String dataType, String status, String timestamp) {
+    public Meta(String description, String provider, String consumer, String dataType, String status, String timestamp, String id) {
         this.description = description;
         this.provider = provider;
         this.consumer = consumer;
         this.dataType = dataType;
         this.status = status;
         this.timestamp = timestamp;
+        this.id = id;
+    }
+
+    public String getId(){
+        return id;
+    }
+    public void setId(String id){
+        this.id = id;
     }
 
     public String getDescription() {
