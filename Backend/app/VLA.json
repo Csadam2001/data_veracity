@@ -5,8 +5,8 @@
     "consumer" : "consumerID",
     "dataType" : "JSON",
     "status" : "signed",
-    "timestamp" : "2025-05-08T20:30:27.294Z",
-    "id" : "18c1f66e-8278-4552-99e7-ba05ecec5ca2"
+    "timestamp" : "2025-05-11T14:37:28.891Z",
+    "id" : "df9d66c3-cdb2-4b44-b89c-6c59367eb53f"
   },
   "objectives" : [ {
     "description" : "xAPI schema validation",
@@ -280,6 +280,13 @@
           }
         }
       }
+    }
+  }, {
+    "description" : "xAPI schema validation",
+    "aspect" : "Sequential",
+    "evaluation" : {
+      "target" : "statement.timestamp",
+      "type" : "Ascending"
     }
   } ]
 }

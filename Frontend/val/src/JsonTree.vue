@@ -4,7 +4,7 @@
       <div>
         <div @click="handleNodeClick(key, value)">
           <span :style="{ marginTop: isExpandable(value) ? '1px' : '-3px' }">{{ key }}</span>
-          <span style="margin-left: 10px; { marginTop: isExpandable(value) ? '1px' : '-3px' }" v-if="isExpandable(value)"> &#9654; </span>
+          <span style="margin-left: 10px; margin-top: 0px; " v-if="isExpandable(value)"> &#9654; </span>
         </div>
         <div style="height: 25px; margin-left: 20px; margin-bottom: 15px;">
           <select style="font-size: 20px;"

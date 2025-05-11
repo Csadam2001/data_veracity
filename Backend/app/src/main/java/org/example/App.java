@@ -195,7 +195,7 @@ public class App {
                     }
                 }
                 break;
-            case "Sequiental":
+            case "Sequential":
                 if (valueArray.length > 0) {
                     try {
                         evaluation.setTarget("statement.timestamp");

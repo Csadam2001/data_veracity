@@ -9,4 +9,5 @@ export const sharedState = reactive({
   jsonend: false,
   fullpaths: [],
   types: [],
+  new : false,
 });

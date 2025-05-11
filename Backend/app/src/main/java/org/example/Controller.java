@@ -101,7 +101,6 @@ public ResponseEntity<String> getJsonContents() {
     try {
         Path filePath = Paths.get("./VLA.json").toAbsolutePath().normalize();
         Path filePath2 = Paths.get("../../VLA.json").toAbsolutePath().normalize();
-        System.out.println(filePath2);
         String jsonContent = java.nio.file.Files.readString(filePath);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)

@@ -230,6 +230,9 @@ export default {
     };
   },
   created() {
+    if(sharedState.new == true){
+      this.createnew();
+    }
     if (sharedState.consign == true && sharedState.prosign == true) {
       this.getConflicts();
       this.createExpectation();
@@ -244,9 +247,6 @@ export default {
 
   methods: {
     async getjsontypes() {
-      const response = await axios.post('http://localhost:8080/api/json_types', sharedState.jsonfile);
-      const json = response.data;
-      sharedState.types = json;
       this.jsonStructure = this.buildJsonFromTypes(sharedState.types);
     },
     buildJsonFromTypes(types) {
@@ -421,9 +421,6 @@ export default {
       this.proValidation.splice(index, 1)
     },
     toggleJsonStructure() {
-      if (!this.showJson) {
-        this.loadJsonStructure();
-      }
       this.showJson = !this.showJson;
     },
     handleKeySelection({ path, type }) {
@@ -433,7 +430,7 @@ export default {
     savesyntaxValidation() {
       this.buildval("Syntax", ["saved"], "Change under Json Structure")
     },
-    savevalueValidation(exp) {
+savevalueValidation(exp) {
       switch (exp) {
         case "Ascending":
           this.buildval("Sequential", ["Sequential_Timestamp"], exp);
@@ -441,19 +438,40 @@ export default {
         case "Descending":
           this.buildval("Sequential", ["Sequential_Timestamp"], exp);
           break;
-        case "Range":
-          this.buildval("Timestamp_Within_Range", [this.selectValue2], this.selectValue3);
+        case "Range":{
+          const parsed = parseInt(this.selectValue3, 10);
+          if (!isNaN(parsed) && Number.isInteger(parsed) && String(parsed) === this.selectValue3.trim()){
+            this.buildval("Timestamp_Within_Range", [this.selectValue2], this.selectValue3);
+          }
+          else{
+            alert("Timestamp can't be String!");
+          }
+          this.selectValue3 = "";
           break;
+        }
         case "Record_Count":
           if (this.selectValue2 == "Min_Max") {
-            this.buildval("Record_Count", [this.selectValue2], [this.selectValue3, this.selectValue4]);
+            if (Number(this.selectValue3) >= Number(this.selectValue4)) {
+              alert("Minimum can't be greater or equal than Maximum!");
+              this.selectValue3 = "";
+              this.selectValue4 = "";
+            }
+            else {
+              this.buildval("Record_Count", [this.selectValue2], [this.selectValue3, this.selectValue4]);
+            }
           }
           else {
             this.buildval("Record_Count", [this.selectValue2], this.selectValue3);
           }
           break;
         case "String_value":
-          this.buildval("String_value", this.selectedPath, this.selectValue3);
+          if(this.selectValue3 != ""){
+            this.buildval("String_value", this.selectedPath, this.selectValue3);
+          }
+          else{
+            alert("String_value can't be null!");
+            this.selectValue3 = "";
+          }
           break;
         case "Integer_value":
           this.buildval("Integer_value", this.selectedPath, this.selectValue3);
@@ -491,11 +509,11 @@ export default {
 
     async createExpectation() {
 
-      let paths = sharedState.types
+      let paths = sharedState.savedValidations
         .filter(validation => !this.arraysAreEqual(validation.path, ["saved"]))
         .map(validation => validation.path);
 
-      let expectations = sharedState.types
+      let expectations = sharedState.savedValidations
         .filter(validation => validation.type !== "Syntax")
         .map(validation => [validation.type]);
 
@@ -506,13 +524,27 @@ export default {
       let typevalue = sharedState.types.map(validation => [validation.type]);
       try {
         await axios.post('http://localhost:8080/api/create-expectation', { paths, expectations, values, typepath, typevalue });
-        alert("Expectation created successfully!");
+        if (window.confirm("Expectation created successfully!\n\nGo to the API JSON?")) {
+        window.open("http://localhost:8080/api/json", "_blank");
+      }
         this.proValidation = [];
         this.vlacreate = false;
       } catch (error) {
         console.error("Error creating expectation:", error);
       }
-      this.$router.push('/validate');
+      this.createnew();  
+    },
+    createnew(){
+      this.jsonloaded = false;
+      sharedState.consign = false;
+      sharedState.prosign = false;
+      sharedState.types = [];
+      sharedState.first = false;
+      sharedState.jsonfile = null;
+      sharedState.savedValidations = [];
+      sharedState.jsonend = false;
+      sharedState.fullpaths = [];
+      sharedState.new = false;
     },
     arraysAreEqual(arr1, arr2) {
       if (arr1.length !== arr2.length) return false;

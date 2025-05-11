@@ -2,14 +2,14 @@
   <div class="header">
     <img style=" height: 130px; margin-right: 30px;" src="../assets/images.png" alt="Header Image" />
     <label class="header-label">Veracity Level Agreement Creating Site</label>
-    <label class="header_role">Role: Producer</label>
+    <label class="header_role">Role: Consumer</label>
     <img style=" padding-left: 20px; height: 100px; background-color: white;" src="../assets/LOGO-PROMETHEUS-X.png" alt="Header Image" />
   </div>
   <hr />
   <div v-if="moreExpectations">
     <div class="temp">
       <div class="Json">
-        <h1>JSON Structure</h1>
+        <h1 style="font-size: 40px;">JSON Structure</h1>
         <button v-if="!jsonended" @click="toggleJsonStructure">
           {{ showJson ? 'Hide JSON Structure' : 'Load JSON Structure' }}
         </button>
@@ -23,8 +23,8 @@
       </div>
 
       <div class="selector">
-        <h1 id="Path-text">Expectation Type</h1>
-        <button @click="expectationType = 'value'">Add Value Expectation</button>
+        <h2 style="font-size: 40px; margin-top: 26px;" id="Path-text">Expectation Type</h2>
+        <button  style="margin-top: -7px;" @click="expectationType = 'value'">Add Value Expectation</button>
 
         <div v-if="expectationType === 'value'" class="struct">
           <h3>Value Expectation</h3>
@@ -90,7 +90,7 @@
       </div>
 
       <div class="struct saved">
-        <h3>Newest VLA:</h3>
+        <h3 style="font-size: 40px; margin-top: 26px;">Newest VLA:</h3>
         <label v-if="!conValidation.length"> No validations yet!</label>
         <div  v-if="conValidation.length">
           <ul>
@@ -232,8 +232,12 @@ export default {
     if (sharedState.first == true) {
       this.getConflicts();
       this.moreExpectations = false;
+      this.jsonStructure = this.buildJsonFromTypes(sharedState.types);
     }
-    this.getjsontypes();
+    if (sharedState.first == false) {
+      this.getjsontypes();
+      sharedState.first = true;
+    }
     console.log(sharedState.types);
   },
   methods: {
@@ -363,7 +367,9 @@ export default {
           if (!isNaN(parsed) && Number.isInteger(parsed) && String(parsed) === this.selectValue3.trim()){
             this.buildval("Timestamp_Within_Range", [this.selectValue2], this.selectValue3);
           }
-          alert("Timestamp can't be String!");
+          else{
+            alert("Timestamp can't be String!");
+          }
           this.selectValue3 = "";
           break;
         }
@@ -475,13 +481,17 @@ export default {
       let typevalue = sharedState.types.map(validation => [validation.type]);
       try {
         await axios.post('http://localhost:8080/api/create-expectation', { paths, expectations, values, typepath, typevalue });
-        alert("Expectation created successfully!");
-        this.conValidation = [];
+        if (window.confirm("Expectation created successfully!\n\n The JSON is available in localhost:8080/api/json! Go to the API JSON?")) {
+        window.open("http://localhost:8080/api/json", "_blank");
+      }
+        this.proValidation = [];
         this.vlacreate = false;
       } catch (error) {
         console.error("Error creating expectation:", error);
       }
-      this.$router.push('/validate');
+      sharedState.new = true;
+      this.moreExpectations = true;
+      this.$router.push('/producer');
     },
     arraysAreEqual(arr1, arr2) {
       if (arr1.length !== arr2.length) return false;
